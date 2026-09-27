@@ -26,17 +26,29 @@ local function ApplyCardBackdrop(frame, borderColor, bgColor)
     frame:SetBackdropBorderColor(border[1], border[2], border[3], border[4])
 end
 
--- Diálogo de confirmación para modos de alto riesgo (Hardcore / Ironman)
+-- Diálogo de confirmación con bloqueo modal total (cero click-through)
 local function CreateConfirmDialog()
     if confirmDialog then return confirmDialog end
 
-    local dlg = CreateFrame("Frame", "WoWPeru_ConfirmDialog", UIParent)
+    -- Frame raíz modal a pantalla completa (bloquea clics en las tarjetas traseras)
+    local blocker = CreateFrame("Frame", "WoWPeru_ConfirmBlocker", UIParent)
+    blocker:SetAllPoints(UIParent)
+    blocker:SetFrameStrata("FULLSCREEN_DIALOG")
+    blocker:SetFrameLevel(110)
+    blocker:EnableMouse(true)
+    blocker:Hide()
+
+    -- Fondo semitransparente atenuador sobre las tarjetas
+    local blockerScrim = blocker:CreateTexture(nil, "BACKGROUND")
+    blockerScrim:SetAllPoints(blocker)
+    blockerScrim:SetTexture("Interface\\Buttons\\WHITE8X8")
+    blockerScrim:SetVertexColor(0, 0, 0, 0.65)
+
+    -- Cuadro centrado de advertencia
+    local dlg = CreateFrame("Frame", "WoWPeru_ConfirmDialog", blocker)
     dlg:SetSize(480, 290)
-    dlg:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-    dlg:SetFrameStrata("FULLSCREEN_DIALOG")
-    dlg:SetFrameLevel(100)
+    dlg:SetPoint("CENTER", blocker, "CENTER", 0, 0)
     dlg:EnableMouse(true)
-    dlg:Hide()
 
     dlg:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -75,7 +87,7 @@ local function CreateConfirmDialog()
     btnAccept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 35, 24)
     btnAccept:SetText(M.L["CONFIRM_BUTTON"] or "¡Acepto el Desafío!")
     btnAccept:SetScript("OnClick", function()
-        dlg:Hide()
+        blocker:Hide()
         if pendingMode then
             M:ApplyMode(pendingMode.id)
             pendingMode = nil
@@ -89,22 +101,26 @@ local function CreateConfirmDialog()
     btnCancel:SetPoint("BOTTOMRIGHT", dlg, "BOTTOMRIGHT", -35, 24)
     btnCancel:SetText(M.L["CANCEL_BUTTON"] or "Volver Atrás")
     btnCancel:SetScript("OnClick", function()
-        dlg:Hide()
+        blocker:Hide()
         pendingMode = nil
     end)
     dlg.btnCancel = btnCancel
 
-    confirmDialog = dlg
-    return dlg
+    -- Registro en UISpecialFrames del blocker para que ESCAPE cierre solo la confirmación
+    tinsert(UISpecialFrames, "WoWPeru_ConfirmBlocker")
+
+    confirmDialog = blocker
+    confirmDialog.dlg = dlg
+    return confirmDialog
 end
 
 local function PromptConfirmation(mode)
-    local dlg = CreateConfirmDialog()
+    local blocker = CreateConfirmDialog()
     pendingMode = mode
-    dlg.title:SetText(mode.confirmTitle or "ADVERTENCIA DE SEGURIDAD")
-    dlg.text:SetText(mode.confirmWarning or "¿Estás seguro de elegir este modo?")
-    dlg.skull:SetTexture(mode.icon or "Interface\\Icons\\Spell_Shadow_DeathScream")
-    dlg:Show()
+    blocker.dlg.title:SetText(mode.confirmTitle or "ADVERTENCIA DE SEGURIDAD")
+    blocker.dlg.text:SetText(mode.confirmWarning or "¿Estás seguro de elegir este modo?")
+    blocker.dlg.skull:SetTexture(mode.icon or "Interface\\Icons\\Spell_Shadow_DeathScream")
+    blocker:Show()
 end
 
 -- Constructor de cada tarjeta de modo
@@ -124,14 +140,24 @@ local function CreateModeCard(parent, mode, index, totalModes)
     local accent = mode.accentColor or {0.85, 0.75, 0.35}
     ApplyCardBackdrop(card, {0.3, 0.3, 0.35, 0.7}, {0.06, 0.06, 0.08, 0.94})
 
-    -- Efecto Hover (Iluminación de bordes al pasar el mouse)
-    card:SetScript("OnEnter", function(self)
-        self:SetBackdropBorderColor(accent[1], accent[2], accent[3], 1.0)
-        self:SetBackdropColor(0.10, 0.10, 0.13, 0.98)
-    end)
-    card:SetScript("OnLeave", function(self)
-        self:SetBackdropBorderColor(0.3, 0.3, 0.35, 0.7)
-        self:SetBackdropColor(0.06, 0.06, 0.08, 0.94)
+    -- Efecto Hover Anti-Flicker y preservación de modo activo
+    local function ApplyHoverState(isHovered)
+        local isCurrent = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode == mode.id)
+        if isHovered or isCurrent then
+            card:SetBackdropBorderColor(accent[1], accent[2], accent[3], 1.0)
+            card:SetBackdropColor(0.10, 0.10, 0.13, 0.98)
+        else
+            card:SetBackdropBorderColor(0.3, 0.3, 0.35, 0.7)
+            card:SetBackdropColor(0.06, 0.06, 0.08, 0.94)
+        end
+    end
+    card.ApplyHoverState = ApplyHoverState
+
+    card:SetScript("OnEnter", function() ApplyHoverState(true) end)
+    card:SetScript("OnLeave", function()
+        if not MouseIsOver(card) then
+            ApplyHoverState(false)
+        end
     end)
 
     -- Contenedor del Icono
@@ -199,13 +225,29 @@ local function CreateModeCard(parent, mode, index, totalModes)
         end
     end
 
-    -- Botón de Acción
+    -- Botón de Acción con validación de estado
     local btn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
     btn:SetSize(160, 30)
     btn:SetPoint("BOTTOM", card, "BOTTOM", 0, 18)
-    btn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+
+    local isCurrentMode = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode == mode.id)
+    local hasAlreadyLocked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode)
+
+    if isCurrentMode then
+        btn:SetText(M.L["SELECTED_BADGE"] or "SELECCIONADO")
+        btn:Disable()
+    elseif hasAlreadyLocked then
+        btn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+        btn:Disable()
+    else
+        btn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+        btn:Enable()
+    end
     
     local function HandleSelect()
+        if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then
+            return
+        end
         if mode.requireConfirmation then
             PromptConfirmation(mode)
         else
@@ -214,14 +256,48 @@ local function CreateModeCard(parent, mode, index, totalModes)
     end
 
     btn:SetScript("OnClick", HandleSelect)
-    card:SetScript("OnClick", HandleSelect)
+    btn:SetScript("OnEnter", function() ApplyHoverState(true) end)
+    btn:SetScript("OnLeave", function()
+        if not MouseIsOver(card) then
+            ApplyHoverState(false)
+        end
+    end)
+
+    card:SetScript("OnClick", function()
+        if not isCurrentMode and not hasAlreadyLocked then
+            HandleSelect()
+        end
+    end)
+
+    card.modeData = mode
+    card.actionBtn = btn
 
     return card
 end
 
+-- Función para calcular auto-escalado según la resolución de pantalla
+local function UpdateContainerScale(container)
+    if not container then return end
+    local screenW = UIParent:GetWidth() or 1024
+    local screenH = UIParent:GetHeight() or 768
+    local baseW = 1040
+    local baseH = 580
+
+    -- Factor de escala para que no supere el 92% de ancho ni el 90% de alto
+    local scaleW = (screenW * 0.92) / baseW
+    local scaleH = (screenH * 0.90) / baseH
+    local finalScale = math.min(1.0, scaleW, scaleH)
+
+    -- Mínimo de 0.60 para pantallas muy reducidas (800x600)
+    container:SetScale(math.max(0.60, finalScale))
+end
+
 -- Constructor de la ventana principal
 local function CreateMainUI()
-    if mainFrame then return mainFrame end
+    if mainFrame then
+        UpdateContainerScale(mainFrame.container)
+        return mainFrame
+    end
 
     -- Frame raíz modal a pantalla completa
     local root = CreateFrame("Frame", "WoWPeru_GameModes_MainFrame", UIParent)
@@ -229,6 +305,9 @@ local function CreateMainUI()
     root:SetFrameStrata("FULLSCREEN_DIALOG")
     root:EnableMouse(true)
     root:Hide()
+
+    -- Registro seguro en UISpecialFrames para cierre nativo con ESCAPE sin secuestrar teclado
+    tinsert(UISpecialFrames, "WoWPeru_GameModes_MainFrame")
 
     -- Capa de viñeta / Fondo oscuro que oscurece el mundo 3D
     local scrim = root:CreateTexture(nil, "BACKGROUND")
@@ -248,6 +327,8 @@ local function CreateMainUI()
         edgeSize = 32,
         insets = { left = 9, right = 9, top = 9, bottom = 9 }
     })
+    root.container = container
+    UpdateContainerScale(container)
 
     -- Encabezado: Servidor y Reino
     local headerLogo = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -296,25 +377,52 @@ local function CreateMainUI()
     end)
     container.closeBtn = closeBtn
 
-    -- Manejador de la tecla Escape en 3.3.5a
-    root:EnableKeyboard(true)
-    root:SetScript("OnKeyDown", function(self, key)
-        if key == "ESCAPE" then
-            if confirmDialog and confirmDialog:IsShown() then
-                confirmDialog:Hide()
-            elseif not M.Config.RequireDecisionToPlay or (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode) then
-                M:CloseSelectionUI()
-            end
+    -- Cierre en cascada: ocultar confirmDialog si root se oculta
+    root:SetScript("OnHide", function()
+        if confirmDialog and confirmDialog:IsShown() then
+            confirmDialog:Hide()
         end
+        pendingMode = nil
     end)
 
     mainFrame = root
     return root
 end
 
+-- Actualizar estado visual de las tarjetas según DB del personaje
+local function UpdateCardsState()
+    if not mainFrame or not mainFrame.container or not mainFrame.container.cards then return end
+    
+    local isLocked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode)
+    local currentMode = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode)
+
+    for _, card in ipairs(mainFrame.container.cards) do
+        if card.modeData and card.actionBtn then
+            if currentMode and card.modeData.id == currentMode then
+                card.actionBtn:SetText(M.L["SELECTED_BADGE"] or "SELECCIONADO")
+                card.actionBtn:Disable()
+            elseif isLocked then
+                card.actionBtn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+                card.actionBtn:Disable()
+            else
+                card.actionBtn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+                card.actionBtn:Enable()
+            end
+            if card.ApplyHoverState then
+                card.ApplyHoverState(false)
+            end
+        end
+    end
+end
+
 -- Abrir la ventana
 function M:OpenSelectionUI()
     local ui = CreateMainUI()
+    if ui and ui.container then
+        UpdateContainerScale(ui.container)
+    end
+    
+    UpdateCardsState()
     
     -- Si ya seleccionó anteriormente, mostrar aviso informativo pero permitir ver las opciones
     if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then

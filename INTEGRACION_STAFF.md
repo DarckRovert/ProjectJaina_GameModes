@@ -76,20 +76,44 @@ Si prefieres no usar comandos de chat visibles y quieres una comunicación silen
   * `SET_MODE:IRONMAN`
   * `SET_MODE:X1`
 
-### Ejemplo de captura en Eluna (Lua Engine de Servidor):
+### Ejemplo de captura en Eluna (Protocolo Bidireccional con Handshake):
 ```lua
-local function OnPlayerAddonMessage(event, sender, type, prefix, text)
-    if prefix == "WP_GAMEMODE" then
-        if text == "SET_MODE:HARDCORE" then
-            -- Lógica del servidor para activar Hardcore
-            -- Ej: sender:SetByteValue(...), agregar aura o insertar en DB
-            sender:SendBroadcastMessage("El modo Hardcore ha sido activado en tu cuenta.")
-        elseif text == "SET_MODE:NORMAL" then
-            -- Confirmar modo normal
-        end
+local PREFIX = "WP_GAMEMODE"
+
+local function ProcessGameMode(player, mode)
+    if mode == "SET_MODE:HARDCORE" then
+        -- 1. Lógica del core: activar Hardcore en DB o añadir aura
+        -- player:AddAura(80000, player) 
+        player:SendBroadcastMessage("|cFFD4AF37[WoW Perú]|r ¡Modo Hardcore activado con éxito!")
+        -- 2. Enviar confirmación ACK al cliente para sellar la UI
+        player:SendAddonMessage(PREFIX, "ACK:HARDCORE", 0, player)
+
+    elseif mode == "SET_MODE:NORMAL" then
+        player:SendAddonMessage(PREFIX, "ACK:NORMAL", 0, player)
+    elseif mode == "SET_MODE:IRONMAN" then
+        player:SendAddonMessage(PREFIX, "ACK:IRONMAN", 0, player)
+    elseif mode == "SET_MODE:X1" then
+        player:SendAddonMessage(PREFIX, "ACK:X1", 0, player)
     end
 end
-RegisterServerEvent(30, OnPlayerAddonMessage) -- PLAYER_EVENT_ON_CHAT (Addon Message)
+
+-- Captura vía Addon Message (jugadores en hermandad o grupo)
+local function OnAddonMessage(event, sender, type, prefix, text)
+    if prefix == PREFIX then
+        ProcessGameMode(sender, text)
+    end
+end
+RegisterServerEvent(30, OnAddonMessage)
+
+-- Captura vía comando transparente para personajes nivel 1 solitarios (.wp_gamemode)
+local function OnPlayerCommand(event, player, command)
+    local cmd, payload = command:match("^(%S+)%s+(%S+)$")
+    if cmd and cmd:lower() == "wp_gamemode" then
+        ProcessGameMode(player, payload)
+        return false -- Silenciar el comando para que no arroje error en consola
+    end
+end
+RegisterPlayerEvent(42, OnPlayerCommand)
 ```
 
 ---

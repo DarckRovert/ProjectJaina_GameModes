@@ -19,11 +19,11 @@ M.Config = {
     HeaderTitle = "ELIGE TU DESTINO",
     HeaderSubtitle = "Selecciona el modo de juego para este personaje. Tu camino forjará tu leyenda.",
 
-    -- Control de Apertura Automática
+    -- Control de Apertura Automática y Modo de Depuración
     AutoOpenOnFirstLogin = true,      -- Se abre de inmediato al entrar al mundo con un personaje nuevo
-    MaxLevelForPrompt = 1,            -- Solo se muestra si el nivel es menor o igual a este valor
-    MaxXPForPrompt = 0,               -- Solo se muestra si la experiencia es 0 (evita mostrarse tras matar mobs)
+    MaxLevelForPrompt = 1,            -- Solo se muestra si el nivel es menor o igual a este valor (55 para DK)
     RequireDecisionToPlay = true,     -- Oscurece la pantalla de fondo para forzar una decisión clara
+    Debug = false,                    -- Activar únicamente para pruebas internas del staff (permite /wpmodes reset)
 
     -- Método de comunicación hacia el servidor:
     -- "COMMAND"   : Ejecuta comandos de chat como .hardcore on o .desafio
@@ -56,7 +56,7 @@ M.Config = {
                 "Grupos y hermandades sin límites",
                 "Ritmo de experiencia regular del reino",
             },
-            command = ".desafio normal",
+            command = "", -- Vacío: no requiere comando de servidor para jugar normal
             addonPayload = "SET_MODE:NORMAL",
             requireConfirmation = false,
         },

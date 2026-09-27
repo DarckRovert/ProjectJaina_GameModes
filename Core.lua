@@ -10,47 +10,120 @@ local M = WoWPeru_GameModes
 local eventFrame = CreateFrame("Frame", "WoWPeru_GameModes_EventFrame", UIParent)
 M.eventFrame = eventFrame
 
--- Registro de eventos clave
+-- Registro de eventos clave y de seguridad
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+eventFrame:RegisterEvent("CHAT_MSG_ADDON")
+eventFrame:RegisterEvent("UNIT_AURA")
 
--- Temporizador seguro para retrasar la apertura tras la pantalla de carga
-local function ScheduleTimer(delay, callback)
-    local elapsed = 0
-    local timerFrame = CreateFrame("Frame")
-    timerFrame:SetScript("OnUpdate", function(self, dt)
-        elapsed = elapsed + dt
-        if elapsed >= delay then
-            self:SetScript("OnUpdate", nil)
-            callback()
-        end
-    end)
+-- Temporizador estático en eventFrame (cero creación de frames huérfanos)
+local timerActive = false
+local timerElapsed = 0
+local timerTarget = 0
+local timerCallback = nil
+
+local function StartSingleTimer(delay, callback)
+    timerElapsed = 0
+    timerTarget = delay
+    timerCallback = callback
+    if not timerActive then
+        timerActive = true
+        eventFrame:SetScript("OnUpdate", function(self, dt)
+            timerElapsed = timerElapsed + dt
+            if timerElapsed >= timerTarget then
+                self:SetScript("OnUpdate", nil)
+                timerActive = false
+                if timerCallback then
+                    local cb = timerCallback
+                    timerCallback = nil
+                    cb()
+                end
+            end
+        end)
+    end
 end
 
--- Despacho seguro de comandos hacia el core del servidor
+-- Escaneo de seguridad de auras del servidor (evita desincronización por WTF borrado en cabinas)
+local function CheckServerAuras()
+    for i = 1, 40 do
+        local name = UnitAura("player", i)
+        if not name then break end
+        local lowerName = string.lower(name)
+        if string.find(lowerName, "hardcore") then
+            if WoWPeru_GameModes_CharDB then
+                WoWPeru_GameModes_CharDB.hasSelectedMode = true
+                WoWPeru_GameModes_CharDB.selectedMode = "HARDCORE"
+            end
+            return true
+        elseif string.find(lowerName, "ironman") then
+            if WoWPeru_GameModes_CharDB then
+                WoWPeru_GameModes_CharDB.hasSelectedMode = true
+                WoWPeru_GameModes_CharDB.selectedMode = "IRONMAN"
+            end
+            return true
+        end
+    end
+    return false
+end
+
+-- Comprobación robusta de elegibilidad para nuevo personaje
+local function IsEligibleForPrompt()
+    if not M.Config.AutoOpenOnFirstLogin then return false end
+    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then return false end
+    if CheckServerAuras() then return false end
+
+    local level = UnitLevel("player")
+    if not level or level == 0 then return false end
+
+    local _, class = UnitClass("player")
+    -- Si es Caballero de la Muerte, su nivel de inicio nativo es 55
+    if class == "DEATHKNIGHT" then
+        return level == 55
+    end
+
+    -- Para todas las demás clases, debe ser nivel 1 (sin bloqueo por XP de descubrimiento)
+    return level == 1
+end
+
+-- Despacho seguro de comandos hacia el core del servidor (3.3.5a)
 local function ExecuteServerCommand(cmd)
     if not cmd or cmd == "" then return end
     
-    -- Método 1: Simulación de caja de chat nativa (mayor compatibilidad con comandos de consola)
-    if DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox then
-        local prevText = DEFAULT_CHAT_FRAME.editBox:GetText()
-        DEFAULT_CHAT_FRAME.editBox:SetText(cmd)
-        ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox)
-        DEFAULT_CHAT_FRAME.editBox:SetText(prevText or "")
+    local firstChar = string.sub(cmd, 1, 1)
+    
+    -- Si es un comando de servidor de emulador (.hardcore, .desafio, etc.)
+    if firstChar == "." or firstChar == "!" then
+        SendChatMessage(cmd, "SAY")
+    -- Si es un comando slash (/script, /macro, etc.)
+    elseif firstChar == "/" then
+        local editBox = ChatFrameEditBox or (DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox)
+        if editBox then
+            local prevText = editBox:GetText()
+            editBox:SetText(cmd)
+            ChatEdit_SendText(editBox)
+            editBox:SetText(prevText or "")
+        end
     else
-        -- Método 2: Fallback directo por SendChatMessage
         SendChatMessage(cmd, "SAY")
     end
 end
 
--- Despacho de paquetes de Addon Message hacia scripts C++/Eluna
+-- Despacho de paquetes hacia scripts C++/Eluna sin depender de hermandad
 local function SendServerAddonMessage(prefix, payload)
     if not prefix or not payload then return end
-    -- Se envía por canal de hermandad si existe, o whisper al propio jugador como loopback
+    
     if IsInGuild() then
         SendAddonMessage(prefix, payload, "GUILD")
+    elseif GetNumRaidMembers() > 0 then
+        SendAddonMessage(prefix, payload, "RAID")
+    elseif GetNumPartyMembers() > 0 then
+        SendAddonMessage(prefix, payload, "PARTY")
     else
-        SendAddonMessage(prefix, payload, "WHISPER", UnitName("player"))
+        -- Personaje nivel 1 solitario: emite comando transparente al core
+        -- para que el backend intercepte el opcode de comando en lugar de un whisper inválido
+        SendChatMessage(string.format(".%s %s", string.lower(prefix), payload), "SAY")
     end
 end
 
@@ -70,24 +143,76 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         }
         
     elseif event == "PLAYER_ENTERING_WORLD" then
-        -- Comprobación empírica de primer ingreso
-        if M.Config.AutoOpenOnFirstLogin then
-            ScheduleTimer(0.8, function()
-                local level = UnitLevel("player")
-                local xp = UnitXP("player")
-                local hasSelected = WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode
-
-                -- Solo abrir automáticamente si es nivel 1, tiene 0 XP y no ha elegido aún
-                if level <= (M.Config.MaxLevelForPrompt or 1) and xp <= (M.Config.MaxXPForPrompt or 0) and not hasSelected then
+        -- Comprobación empírica de primer ingreso con tolerancia a carga de mundo
+        if IsEligibleForPrompt() then
+            StartSingleTimer(1.0, function()
+                if IsEligibleForPrompt() and not InCombatLockdown() then
                     M:OpenSelectionUI()
                 end
             end)
         end
+
+    elseif event == "PLAYER_REGEN_DISABLED" then
+        -- Protección de vida: cerrar modal inmediatamente si entra en combate
+        if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+            M:CloseSelectionUI()
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú]|r Has entrado en combate. El selector se ha cerrado para protegerte.")
+        end
+
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        -- Reabrir automáticamente tras salir de combate si aún no ha seleccionado modo
+        if IsEligibleForPrompt() then
+            StartSingleTimer(1.2, function()
+                if IsEligibleForPrompt() and not InCombatLockdown() then
+                    M:OpenSelectionUI()
+                end
+            end)
+        end
+
+    elseif event == "CHAT_MSG_ADDON" then
+        local prefix, message, channel, sender = arg1, arg2, arg3, arg4
+        if prefix == M.Config.AddonMsgPrefix and message then
+            -- 1. Confirmación de activación exitosa desde el backend
+            if string.find(message, "^ACK:") then
+                local modeAck = string.sub(message, 5)
+                if WoWPeru_GameModes_CharDB then
+                    WoWPeru_GameModes_CharDB.hasSelectedMode = true
+                    WoWPeru_GameModes_CharDB.selectedMode = modeAck
+                end
+            -- 2. Reporte de estado desde el servidor (re-sincronización)
+            elseif string.find(message, "^STATUS:") then
+                local serverMode = string.sub(message, 8)
+                if serverMode ~= "NONE" and WoWPeru_GameModes_CharDB then
+                    WoWPeru_GameModes_CharDB.hasSelectedMode = true
+                    WoWPeru_GameModes_CharDB.selectedMode = serverMode
+                end
+            -- 3. Error devuelto por el servidor
+            elseif string.find(message, "^ERR:") then
+                local errMsg = string.sub(message, 5)
+                DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú] Error del Servidor:|r " .. errMsg)
+                -- Desbloquear localmente para permitir reintento si fue rechazado
+                if WoWPeru_GameModes_CharDB then
+                    WoWPeru_GameModes_CharDB.hasSelectedMode = false
+                    WoWPeru_GameModes_CharDB.selectedMode = nil
+                end
+            end
+        end
+
+    elseif event == "UNIT_AURA" and arg1 == "player" then
+        CheckServerAuras()
     end
 end)
 
--- Función pública para aplicar el modo seleccionado
-function M:ApplyMode(modeId)
+-- Función pública para aplicar el modo seleccionado (con protección de inmutabilidad)
+function M:ApplyMode(modeId, force)
+    -- Candado de seguridad: Evitar sobrescritura si ya está bloqueado
+    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode and not force then
+        local current = WoWPeru_GameModes_CharDB.selectedMode or "Desconocido"
+        DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], current))
+        M:CloseSelectionUI()
+        return
+    end
+
     local selectedMode = nil
     for _, mode in ipairs(M.Config.Modes) do
         if mode.id == modeId then
@@ -147,6 +272,12 @@ SlashCmdList["WOWPERU_MODES"] = function(msg)
         local locked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode) and "Sí" or "No"
         DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["STATUS_COMMAND"], UnitName("player"), current, locked))
     elseif cmd == "reset" then
+        -- Candado de seguridad para producción: solo permitido si Debug está activo
+        if not M.Config.Debug then
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú]|r El reseteo de modo solo está disponible en modo depuración (Config.Debug = true).")
+            return
+        end
+
         if WoWPeru_GameModes_CharDB then
             WoWPeru_GameModes_CharDB.hasSelectedMode = false
             WoWPeru_GameModes_CharDB.selectedMode = nil
