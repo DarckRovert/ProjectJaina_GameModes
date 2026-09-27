@@ -1,0 +1,6 @@
+# WoW Cache & temp files
+*.bak
+*.old
+*.log
+.DS_Store
+Thumbs.db

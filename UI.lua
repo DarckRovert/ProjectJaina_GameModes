@@ -1,0 +1,340 @@
+--[[
+    WoW Perú - Selector de Modos de Juego (UI.lua)
+    Interfaz de usuario cinematográfica, tarjetas interactivas y modal de confirmación.
+]]
+
+WoWPeru_GameModes = WoWPeru_GameModes or {}
+local M = WoWPeru_GameModes
+
+local mainFrame = nil
+local confirmDialog = nil
+local pendingMode = nil
+
+-- Utilidad: Crear bordes y fondos estilizados
+local function ApplyCardBackdrop(frame, borderColor, bgColor)
+    frame:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 16,
+        edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+    local bg = bgColor or {0.05, 0.05, 0.07, 0.94}
+    local border = borderColor or {0.35, 0.35, 0.40, 0.8}
+    frame:SetBackdropColor(bg[1], bg[2], bg[3], bg[4])
+    frame:SetBackdropBorderColor(border[1], border[2], border[3], border[4])
+end
+
+-- Diálogo de confirmación para modos de alto riesgo (Hardcore / Ironman)
+local function CreateConfirmDialog()
+    if confirmDialog then return confirmDialog end
+
+    local dlg = CreateFrame("Frame", "WoWPeru_ConfirmDialog", UIParent)
+    dlg:SetSize(480, 290)
+    dlg:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    dlg:SetFrameStrata("FULLSCREEN_DIALOG")
+    dlg:SetFrameLevel(100)
+    dlg:EnableMouse(true)
+    dlg:Hide()
+
+    dlg:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Destruction-Border",
+        tile = true,
+        tileSize = 32,
+        edgeSize = 32,
+        insets = { left = 11, right = 11, top = 12, bottom = 11 }
+    })
+
+    -- Título de Advertencia
+    local title = dlg:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+    title:SetPoint("TOP", dlg, "TOP", 0, -22)
+    title:SetTextColor(1.0, 0.2, 0.2)
+    dlg.title = title
+
+    -- Calavera / Icono de peligro
+    local skull = dlg:CreateTexture(nil, "ARTWORK")
+    skull:SetSize(40, 40)
+    skull:SetPoint("TOP", title, "BOTTOM", 0, -8)
+    skull:SetTexture("Interface\\Icons\\Spell_Shadow_DeathScream")
+    dlg.skull = skull
+
+    -- Texto explicativo
+    local text = dlg:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    text:SetPoint("TOP", skull, "BOTTOM", 0, -12)
+    text:SetPoint("LEFT", dlg, "LEFT", 28, 0)
+    text:SetPoint("RIGHT", dlg, "RIGHT", -28, 0)
+    text:SetJustifyH("CENTER")
+    text:SetSpacing(3)
+    dlg.text = text
+
+    -- Botón de Confirmación Definitiva
+    local btnAccept = CreateFrame("Button", "WoWPeru_ConfirmAcceptBtn", dlg, "UIPanelButtonTemplate")
+    btnAccept:SetSize(190, 32)
+    btnAccept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 35, 24)
+    btnAccept:SetText(M.L["CONFIRM_BUTTON"] or "¡Acepto el Desafío!")
+    btnAccept:SetScript("OnClick", function()
+        dlg:Hide()
+        if pendingMode then
+            M:ApplyMode(pendingMode.id)
+            pendingMode = nil
+        end
+    end)
+    dlg.btnAccept = btnAccept
+
+    -- Botón de Cancelar / Volver
+    local btnCancel = CreateFrame("Button", "WoWPeru_ConfirmCancelBtn", dlg, "UIPanelButtonTemplate")
+    btnCancel:SetSize(150, 32)
+    btnCancel:SetPoint("BOTTOMRIGHT", dlg, "BOTTOMRIGHT", -35, 24)
+    btnCancel:SetText(M.L["CANCEL_BUTTON"] or "Volver Atrás")
+    btnCancel:SetScript("OnClick", function()
+        dlg:Hide()
+        pendingMode = nil
+    end)
+    dlg.btnCancel = btnCancel
+
+    confirmDialog = dlg
+    return dlg
+end
+
+local function PromptConfirmation(mode)
+    local dlg = CreateConfirmDialog()
+    pendingMode = mode
+    dlg.title:SetText(mode.confirmTitle or "ADVERTENCIA DE SEGURIDAD")
+    dlg.text:SetText(mode.confirmWarning or "¿Estás seguro de elegir este modo?")
+    dlg.skull:SetTexture(mode.icon or "Interface\\Icons\\Spell_Shadow_DeathScream")
+    dlg:Show()
+end
+
+-- Constructor de cada tarjeta de modo
+local function CreateModeCard(parent, mode, index, totalModes)
+    local cardWidth = 220
+    local cardHeight = 400
+    local spacing = 16
+    local totalWidth = (totalModes * cardWidth) + ((totalModes - 1) * spacing)
+    local startX = -(totalWidth / 2) + (cardWidth / 2)
+    local posX = startX + ((index - 1) * (cardWidth + spacing))
+
+    local card = CreateFrame("Button", "WoWPeru_Card_" .. mode.id, parent)
+    card:SetSize(cardWidth, cardHeight)
+    card:SetPoint("CENTER", parent, "CENTER", posX, -25)
+    card:EnableMouse(true)
+
+    local accent = mode.accentColor or {0.85, 0.75, 0.35}
+    ApplyCardBackdrop(card, {0.3, 0.3, 0.35, 0.7}, {0.06, 0.06, 0.08, 0.94})
+
+    -- Efecto Hover (Iluminación de bordes al pasar el mouse)
+    card:SetScript("OnEnter", function(self)
+        self:SetBackdropBorderColor(accent[1], accent[2], accent[3], 1.0)
+        self:SetBackdropColor(0.10, 0.10, 0.13, 0.98)
+    end)
+    card:SetScript("OnLeave", function(self)
+        self:SetBackdropBorderColor(0.3, 0.3, 0.35, 0.7)
+        self:SetBackdropColor(0.06, 0.06, 0.08, 0.94)
+    end)
+
+    -- Contenedor del Icono
+    local iconFrame = CreateFrame("Frame", nil, card)
+    iconFrame:SetSize(54, 54)
+    iconFrame:SetPoint("TOP", card, "TOP", 0, -20)
+    iconFrame:SetBackdrop({
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 12,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 }
+    })
+    iconFrame:SetBackdropBorderColor(accent[1], accent[2], accent[3], 0.9)
+
+    local icon = iconFrame:CreateTexture(nil, "ARTWORK")
+    icon:SetAllPoints(iconFrame)
+    icon:SetTexture(mode.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+    -- Badge / Distintivo (Ej. "1 Sola Vida", "Estándar")
+    local badgeBg = card:CreateTexture(nil, "BACKGROUND")
+    badgeBg:SetSize(120, 18)
+    badgeBg:SetPoint("TOP", iconFrame, "BOTTOM", 0, -8)
+    badgeBg:SetTexture("Interface\\Buttons\\WHITE8X8")
+    local bColor = mode.badgeColor or {0.4, 0.4, 0.4}
+    badgeBg:SetVertexColor(bColor[1] * 0.3, bColor[2] * 0.3, bColor[3] * 0.3, 0.8)
+
+    local badgeText = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    badgeText:SetPoint("CENTER", badgeBg, "CENTER", 0, 0)
+    badgeText:SetText(mode.badge or "")
+    badgeText:SetTextColor(bColor[1], bColor[2], bColor[3])
+
+    -- Título del Modo
+    local title = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+    title:SetPoint("TOP", badgeBg, "BOTTOM", 0, -8)
+    title:SetText(mode.title or "Modo")
+    title:SetTextColor(accent[1], accent[2], accent[3])
+
+    -- Subtítulo / Tagline
+    local tagline = card:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    tagline:SetPoint("TOP", title, "BOTTOM", 0, -4)
+    tagline:SetPoint("LEFT", card, "LEFT", 12, 0)
+    tagline:SetPoint("RIGHT", card, "RIGHT", -12, 0)
+    tagline:SetText(mode.tagline or "")
+    tagline:SetTextColor(0.75, 0.75, 0.75)
+    tagline:SetJustifyH("CENTER")
+
+    -- Línea divisoria
+    local div = card:CreateTexture(nil, "ARTWORK")
+    div:SetSize(cardWidth - 30, 1)
+    div:SetPoint("TOP", tagline, "BOTTOM", 0, -8)
+    div:SetTexture("Interface\\Buttons\\WHITE8X8")
+    div:SetVertexColor(accent[1], accent[2], accent[3], 0.3)
+
+    -- Lista de Características (Perks)
+    local lastAnchor = div
+    if mode.perks and #mode.perks > 0 then
+        for pIdx, perk in ipairs(mode.perks) do
+            local bullet = card:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            bullet:SetPoint("TOPLEFT", lastAnchor, "BOTTOMLEFT", 8, -6)
+            bullet:SetPoint("RIGHT", card, "RIGHT", -10, 0)
+            bullet:SetText("|cFFFFD100•|r " .. perk)
+            bullet:SetJustifyH("LEFT")
+            bullet:SetSpacing(1)
+            lastAnchor = bullet
+        end
+    end
+
+    -- Botón de Acción
+    local btn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
+    btn:SetSize(160, 30)
+    btn:SetPoint("BOTTOM", card, "BOTTOM", 0, 18)
+    btn:SetText(M.L["SELECT_BUTTON"] or "Elegir Modo")
+    
+    local function HandleSelect()
+        if mode.requireConfirmation then
+            PromptConfirmation(mode)
+        else
+            M:ApplyMode(mode.id)
+        end
+    end
+
+    btn:SetScript("OnClick", HandleSelect)
+    card:SetScript("OnClick", HandleSelect)
+
+    return card
+end
+
+-- Constructor de la ventana principal
+local function CreateMainUI()
+    if mainFrame then return mainFrame end
+
+    -- Frame raíz modal a pantalla completa
+    local root = CreateFrame("Frame", "WoWPeru_GameModes_MainFrame", UIParent)
+    root:SetAllPoints(UIParent)
+    root:SetFrameStrata("FULLSCREEN_DIALOG")
+    root:EnableMouse(true)
+    root:Hide()
+
+    -- Capa de viñeta / Fondo oscuro que oscurece el mundo 3D
+    local scrim = root:CreateTexture(nil, "BACKGROUND")
+    scrim:SetAllPoints(root)
+    scrim:SetTexture("Interface\\Buttons\\WHITE8X8")
+    scrim:SetVertexColor(0.02, 0.02, 0.03, 0.88)
+
+    -- Contenedor Central con marco dorado
+    local container = CreateFrame("Frame", nil, root)
+    container:SetSize(1020, 560)
+    container:SetPoint("CENTER", root, "CENTER", 0, 0)
+    container:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+        tile = true,
+        tileSize = 32,
+        edgeSize = 32,
+        insets = { left = 9, right = 9, top = 9, bottom = 9 }
+    })
+
+    -- Encabezado: Servidor y Reino
+    local headerLogo = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    headerLogo:SetPoint("TOP", container, "TOP", 0, -20)
+    headerLogo:SetText(string.format("|cFFD4AF37%s|r  —  |cFFFFFFFF%s|r", M.Config.ServerName or "WoW Perú", M.Config.RealmName or "Reino Andino"))
+
+    -- Título Principal
+    local headerTitle = container:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+    headerTitle:SetPoint("TOP", headerLogo, "BOTTOM", 0, -6)
+    headerTitle:SetText(M.Config.HeaderTitle or "ELIGE TU DESTINO")
+    headerTitle:SetTextColor(1.0, 0.85, 0.2)
+
+    -- Subtítulo explicativo
+    local headerSubtitle = container:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    headerSubtitle:SetPoint("TOP", headerTitle, "BOTTOM", 0, -4)
+    headerSubtitle:SetText(M.Config.HeaderSubtitle or "Selecciona el modo de juego para este personaje.")
+    headerSubtitle:SetTextColor(0.8, 0.8, 0.8)
+
+    -- Línea divisoria superior dorada
+    local topDiv = container:CreateTexture(nil, "ARTWORK")
+    topDiv:SetSize(900, 2)
+    topDiv:SetPoint("TOP", headerSubtitle, "BOTTOM", 0, -12)
+    topDiv:SetTexture("Interface\\Buttons\\WHITE8X8")
+    topDiv:SetVertexColor(0.83, 0.69, 0.22, 0.4)
+
+    -- Contar modos habilitados
+    local enabledModes = {}
+    for _, mode in ipairs(M.Config.Modes) do
+        if mode.enabled then
+            table.insert(enabledModes, mode)
+        end
+    end
+
+    -- Generar las tarjetas
+    container.cards = {}
+    for idx, mode in ipairs(enabledModes) do
+        local card = CreateModeCard(container, mode, idx, #enabledModes)
+        table.insert(container.cards, card)
+    end
+
+    -- Botón discreto de cerrar (solo disponible si no es decisión obligatoria o para testing)
+    local closeBtn = CreateFrame("Button", nil, container, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", container, "TOPRIGHT", -8, -8)
+    closeBtn:SetScript("OnClick", function()
+        M:CloseSelectionUI()
+    end)
+    container.closeBtn = closeBtn
+
+    -- Manejador de la tecla Escape en 3.3.5a
+    root:EnableKeyboard(true)
+    root:SetScript("OnKeyDown", function(self, key)
+        if key == "ESCAPE" then
+            if confirmDialog and confirmDialog:IsShown() then
+                confirmDialog:Hide()
+            elseif not M.Config.RequireDecisionToPlay or (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode) then
+                M:CloseSelectionUI()
+            end
+        end
+    end)
+
+    mainFrame = root
+    return root
+end
+
+-- Abrir la ventana
+function M:OpenSelectionUI()
+    local ui = CreateMainUI()
+    
+    -- Si ya seleccionó anteriormente, mostrar aviso informativo pero permitir ver las opciones
+    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then
+        DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], WoWPeru_GameModes_CharDB.selectedMode or "Desconocido"))
+    end
+
+    if M.Config.SoundOnOpen then
+        PlaySoundFile(M.Config.SoundOnOpen)
+    end
+
+    ui:Show()
+end
+
+-- Cerrar la ventana
+function M:CloseSelectionUI()
+    if mainFrame then
+        mainFrame:Hide()
+    end
+    if confirmDialog then
+        confirmDialog:Hide()
+    end
+    pendingMode = nil
+end

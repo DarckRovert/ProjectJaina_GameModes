@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: |cFFD4AF37WoW Perú|r - Modos de Juego
+## Notes: Selector cinematográfico de modos de juego (Normal, Hardcore, Ironman) para nuevos personajes en el Reino Andino.
+## Author: DarckRovert & WoW Perú Team
+## Version: 1.0.0
+## SavedVariables: WoWPeru_GameModes_GlobalDB
+## SavedVariablesPerCharacter: WoWPeru_GameModes_CharDB
+
+Config.lua
+Locales.lua
+Core.lua
+UI.lua
