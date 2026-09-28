@@ -60,7 +60,7 @@ Este módulo es parte del ecosistema de 4 sistemas. Ver el registro maestro comp
 | `WoWPeru_BattlePass` | `WP_BP` | Progresión estacional de 50 niveles | ✅ Sin conflicto |
 | **`WoWPeru_GameModes`** | **`WP_GAMEMODE`** | **Este módulo** | — |
 | `WowPeruVisualShop` | `WP_VISUAL` | Cosméticos y visuales | ✅ Sin conflicto |
-| `SEQUITO` | `SEQUITO` | Suite de combate y raids | ✅ Sin conflicto |
+| `WoWPeru_RaidSuite` | `SEQUITO` | Suite de combate y raids | ✅ Sin conflicto |
 
 ---
 
