@@ -91,44 +91,32 @@ end
 local function ExecuteServerCommand(cmd)
     if not cmd or cmd == "" then return end
     
-    local firstChar = string.sub(cmd, 1, 1)
-    
-    -- Si es un comando de servidor de emulador (.hardcore, .desafio, etc.)
-    if firstChar == "." or firstChar == "!" then
-        SendChatMessage(cmd, "SAY")
-    -- Si es un comando slash (/script, /macro, etc.)
-    elseif firstChar == "/" then
-        local editBox = ChatFrameEditBox or (DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox)
-        if editBox then
-            local prevText = editBox:GetText()
-            editBox:SetText(cmd)
-            ChatEdit_SendText(editBox)
-            editBox:SetText(prevText or "")
-        end
+    local editBox = ChatFrameEditBox or (DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox)
+    if editBox then
+        local prevText = editBox:GetText()
+        editBox:SetText(cmd)
+        ChatEdit_SendText(editBox)
+        editBox:SetText(prevText or "")
     else
         SendChatMessage(cmd, "SAY")
     end
 end
 
--- Despacho de paquetes hacia scripts C++/Eluna sin depender de hermandad
+-- Despacho seguro de paquetes hacia scripts C++/Eluna (WHISPER conforme a Ley III)
 local function SendServerAddonMessage(prefix, payload)
     if not prefix or not payload then return end
-    
-    if IsInGuild() then
-        SendAddonMessage(prefix, payload, "GUILD")
-    elseif GetNumRaidMembers() > 0 then
-        SendAddonMessage(prefix, payload, "RAID")
-    elseif GetNumPartyMembers() > 0 then
-        SendAddonMessage(prefix, payload, "PARTY")
-    else
-        -- Personaje nivel 1 solitario: emite comando transparente al core
-        -- para que el backend intercepte el opcode de comando en lugar de un whisper inválido
-        SendChatMessage(string.format(".%s %s", string.lower(prefix), payload), "SAY")
+    local playerName = UnitName("player")
+    if not playerName or playerName == "" or playerName == UNKNOWNOBJECT then return end
+
+    if RegisterAddonMessagePrefix then
+        RegisterAddonMessagePrefix(prefix)
     end
+    SendAddonMessage(prefix, payload, "WHISPER", playerName)
 end
 
 -- Manejador principal de eventos
-eventFrame:SetScript("OnEvent", function(self, event, arg1)
+eventFrame:SetScript("OnEvent", function(self, event, ...)
+    local arg1, arg2, arg3, arg4 = ...
     if event == "ADDON_LOADED" and arg1 == "WoWPeru_GameModes" then
         -- Inicialización de base de datos por personaje
         WoWPeru_GameModes_CharDB = WoWPeru_GameModes_CharDB or {
@@ -143,6 +131,9 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         }
         
     elseif event == "PLAYER_ENTERING_WORLD" then
+        if RegisterAddonMessagePrefix then
+            RegisterAddonMessagePrefix(M.Config.AddonMsgPrefix)
+        end
         -- Comprobación empírica de primer ingreso con tolerancia a carga de mundo
         if IsEligibleForPrompt() then
             StartSingleTimer(1.0, function()
