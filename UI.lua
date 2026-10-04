@@ -59,9 +59,16 @@ local function CreateConfirmDialog()
         insets = { left = 11, right = 11, top = 12, bottom = 11 }
     })
 
+    -- Logo Oficial de WoW Perú
+    local dlgLogo = dlg:CreateTexture(nil, "ARTWORK")
+    dlgLogo:SetSize(60, 30)
+    dlgLogo:SetPoint("TOP", dlg, "TOP", 0, -8)
+    dlgLogo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    dlg.logo = dlgLogo
+
     -- Título de Advertencia
     local title = dlg:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-    title:SetPoint("TOP", dlg, "TOP", 0, -22)
+    title:SetPoint("TOP", dlg, "TOP", 0, -40)
     title:SetTextColor(1.0, 0.2, 0.2)
     dlg.title = title
 
@@ -329,6 +336,13 @@ local function CreateMainUI()
     })
     root.container = container
     UpdateContainerScale(container)
+
+    -- Logo Oficial de WoW Perú
+    local logo = container:CreateTexture(nil, "ARTWORK")
+    logo:SetSize(110, 55)
+    logo:SetPoint("TOPLEFT", container, "TOPLEFT", 20, -12)
+    logo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    container.logo = logo
 
     -- Encabezado: Servidor y Reino
     local headerLogo = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")

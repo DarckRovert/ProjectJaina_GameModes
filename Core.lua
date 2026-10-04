@@ -91,14 +91,27 @@ end
 local function ExecuteServerCommand(cmd)
     if not cmd or cmd == "" then return end
     
-    local editBox = ChatFrameEditBox or (DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox)
-    if editBox then
+    -- En WoW 3.3.5a (Build 12340), el widget nativo de chat es ChatFrame1EditBox o LAST_ACTIVE_CHAT_EDIT_BOX
+    local editBox = ChatFrame1EditBox or LAST_ACTIVE_CHAT_EDIT_BOX
+    if editBox and ChatEdit_SendText then
         local prevText = editBox:GetText()
+        local prevType = editBox:GetAttribute("chatType")
+        
         editBox:SetText(cmd)
         ChatEdit_SendText(editBox)
-        editBox:SetText(prevText or "")
+        
+        -- Restaurar el texto y tipo previo si el usuario tenía algo escrito
+        if prevText and prevText ~= "" then
+            editBox:SetText(prevText)
+        end
+        if prevType then
+            editBox:SetAttribute("chatType", prevType)
+        end
     else
-        SendChatMessage(cmd, "SAY")
+        -- Salvaguarda: Jamás filtrar comandos como texto en /say
+        if DEFAULT_CHAT_FRAME then
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF4444[WoW Perú]|r No se pudo despachar el comando del modo: " .. tostring(cmd))
+        end
     end
 end
 
@@ -134,14 +147,16 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         if RegisterAddonMessagePrefix then
             RegisterAddonMessagePrefix(M.Config.AddonMsgPrefix)
         end
-        -- Comprobación empírica de primer ingreso con tolerancia a carga de mundo
-        if IsEligibleForPrompt() then
-            StartSingleTimer(1.0, function()
-                if IsEligibleForPrompt() and not InCombatLockdown() then
-                    M:OpenSelectionUI()
-                end
-            end)
-        end
+
+        -- Solicitar estado autoritativo al servidor (Handshake inicial)
+        SendServerAddonMessage(M.Config.AddonMsgPrefix, "REQ_STATUS")
+
+        -- Timeout de seguridad (3.0s) únicamente como fallback si el servidor no responde
+        StartSingleTimer(3.0, function()
+            if IsEligibleForPrompt() and not InCombatLockdown() then
+                M:OpenSelectionUI()
+            end
+        end)
 
     elseif event == "PLAYER_REGEN_DISABLED" then
         -- Protección de vida: cerrar modal inmediatamente si entra en combate
@@ -170,12 +185,30 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                     WoWPeru_GameModes_CharDB.hasSelectedMode = true
                     WoWPeru_GameModes_CharDB.selectedMode = modeAck
                 end
+                if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+                    M:CloseSelectionUI()
+                end
             -- 2. Reporte de estado desde el servidor (re-sincronización)
             elseif string.find(message, "^STATUS:") then
                 local serverMode = string.sub(message, 8)
-                if serverMode ~= "NONE" and WoWPeru_GameModes_CharDB then
-                    WoWPeru_GameModes_CharDB.hasSelectedMode = true
-                    WoWPeru_GameModes_CharDB.selectedMode = serverMode
+                if serverMode ~= "NONE" then
+                    if WoWPeru_GameModes_CharDB then
+                        WoWPeru_GameModes_CharDB.hasSelectedMode = true
+                        WoWPeru_GameModes_CharDB.selectedMode = serverMode
+                    end
+                    -- Si el menú de selección estaba en pantalla, cerrarlo de inmediato
+                    if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+                        M:CloseSelectionUI()
+                    end
+                else
+                    -- El servidor confirma que es un personaje virgen sin modo asignado
+                    if WoWPeru_GameModes_CharDB then
+                        WoWPeru_GameModes_CharDB.hasSelectedMode = false
+                        WoWPeru_GameModes_CharDB.selectedMode = nil
+                    end
+                    if IsEligibleForPrompt() and not InCombatLockdown() then
+                        M:OpenSelectionUI()
+                    end
                 end
             -- 3. Error devuelto por el servidor
             elseif string.find(message, "^ERR:") then

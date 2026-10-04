@@ -5,6 +5,16 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/
 
 ---
 
+## [1.0.1] - 2026-10-04
+
+### 🛡️ Seguridad Anti-Exploit y Resiliencia en Cabinas
+- **Persistencia de Perdón Hardcore en Servidor (`80_GameModesSystem.lua`, Fix #2):**
+  - Implementada columna `pardon_pending` en la tabla `character_game_modes`. Si un personaje en modo Hardcore muere pero cuenta con un perdón otorgado por staff, el core ya no elimina el modo ni resetea sus estadísticas arbitrariamente.
+- **Prevención de Race Conditions en Cabinas de Internet (`Core.lua`, Fix #4):**
+  - Sincronización atómica entre el escaneo de auras nativas del core y las variables `WTF/` locales. Previene que clientes en máquinas congeladas (Deep Freeze) pierdan el estado de modo de juego al reconectar o cambiar de personaje.
+
+---
+
 ## [1.0.0] - 2026-09-27
 
 ### 🎉 Lanzamiento Oficial - WoW Perú Game Modes Suite

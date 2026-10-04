@@ -29,7 +29,7 @@ M.Config = {
     -- "COMMAND"   : Ejecuta comandos de chat como .hardcore on o .desafio
     -- "ADDON_MSG" : Envía mensaje oculto por SendAddonMessage (ideal para módulos C++ o Eluna)
     -- "BOTH"      : Envía ambos métodos simultáneamente para máxima compatibilidad
-    DispatchMethod = "BOTH",
+    DispatchMethod = "ADDON_MSG",
     AddonMsgPrefix = "WP_GAMEMODE",
 
     -- Efectos audiovisuales
