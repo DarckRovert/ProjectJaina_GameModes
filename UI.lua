@@ -26,6 +26,21 @@ local function ApplyCardBackdrop(frame, borderColor, bgColor)
     frame:SetBackdropBorderColor(border[1], border[2], border[3], border[4])
 end
 
+-- Utilidad: Registro seguro e idempotente en UISpecialFrames respetando prioridad LIFO
+local function RegisterSpecialFrame(frameName, atFront)
+    if not frameName then return end
+    for i = #UISpecialFrames, 1, -1 do
+        if UISpecialFrames[i] == frameName then
+            table.remove(UISpecialFrames, i)
+        end
+    end
+    if atFront then
+        table.insert(UISpecialFrames, 1, frameName)
+    else
+        table.insert(UISpecialFrames, frameName)
+    end
+end
+
 -- Diálogo de confirmación con bloqueo modal total (cero click-through)
 local function CreateConfirmDialog()
     if confirmDialog then return confirmDialog end
@@ -88,16 +103,16 @@ local function CreateConfirmDialog()
     text:SetSpacing(3)
     dlg.text = text
 
-    -- Botón de Confirmación Definitiva
+    -- Botón de Confirmación Definitiva (con captura atómica previa a Hide)
     local btnAccept = CreateFrame("Button", "WoWPeru_ConfirmAcceptBtn", dlg, "UIPanelButtonTemplate")
     btnAccept:SetSize(190, 32)
     btnAccept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 35, 24)
     btnAccept:SetText(M.L["CONFIRM_BUTTON"] or "¡Acepto el Desafío!")
     btnAccept:SetScript("OnClick", function()
+        local modeToApply = pendingMode
         blocker:Hide()
-        if pendingMode then
-            M:ApplyMode(pendingMode.id)
-            pendingMode = nil
+        if modeToApply then
+            M:ApplyMode(modeToApply.id)
         end
     end)
     dlg.btnAccept = btnAccept
@@ -109,12 +124,17 @@ local function CreateConfirmDialog()
     btnCancel:SetText(M.L["CANCEL_BUTTON"] or "Volver Atrás")
     btnCancel:SetScript("OnClick", function()
         blocker:Hide()
-        pendingMode = nil
     end)
     dlg.btnCancel = btnCancel
 
-    -- Registro en UISpecialFrames del blocker para que ESCAPE cierre solo la confirmación
-    tinsert(UISpecialFrames, "WoWPeru_ConfirmBlocker")
+    -- Limpieza garantizada del estado al ocultarse (sea por ESC, cancelar o aceptar)
+    blocker:SetScript("OnHide", function()
+        pendingMode = nil
+    end)
+
+    -- Registro prioritario en la posición 1 de UISpecialFrames:
+    -- Garantiza que CloseWindows() cierre el diálogo de confirmación ANTES que la ventana base
+    RegisterSpecialFrame("WoWPeru_ConfirmBlocker", true)
 
     confirmDialog = blocker
     confirmDialog.dlg = dlg
@@ -313,8 +333,8 @@ local function CreateMainUI()
     root:EnableMouse(true)
     root:Hide()
 
-    -- Registro seguro en UISpecialFrames para cierre nativo con ESCAPE sin secuestrar teclado
-    tinsert(UISpecialFrames, "WoWPeru_GameModes_MainFrame")
+    -- Registro seguro del marco base en UISpecialFrames
+    RegisterSpecialFrame("WoWPeru_GameModes_MainFrame", false)
 
     -- Capa de viñeta / Fondo oscuro que oscurece el mundo 3D
     local scrim = root:CreateTexture(nil, "BACKGROUND")
@@ -398,6 +418,13 @@ local function CreateMainUI()
         end
         pendingMode = nil
     end)
+
+    root:SetScript("OnSizeChanged", function()
+        UpdateContainerScale(container)
+    end)
+
+    -- Pre-inicializar el diálogo modal para asegurar la jerarquía en UISpecialFrames
+    CreateConfirmDialog()
 
     mainFrame = root
     return root
