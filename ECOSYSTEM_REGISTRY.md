@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `character_gamemodes` (
 ## 3. Posición en el Ecosistema WoW Perú
 
 Este módulo es parte del ecosistema de 4 sistemas. Ver el registro maestro completo en:
-- [ECOSYSTEM_REGISTRY.md raíz](../../../../../ECOSYSTEM_REGISTRY.md) (si aplica)
+- [Auditoría Maestra del Ecosistema](../ECOSYSTEM_MASTER_AUDIT.md)
 
 | Sistema | Prefijo | Propósito | Convive con GameModes |
 | :--- | :--- | :--- | :--- |

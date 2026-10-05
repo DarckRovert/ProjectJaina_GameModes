@@ -83,8 +83,22 @@ Interface/AddOns/WoWPeru_GameModes/
 
 ---
 
+## 📄 Licencia
+
+Este proyecto está licenciado bajo los términos de la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+## 📚 Documentación del Ecosistema
+
+* [Ficha Técnica Oficial del Ecosistema](ECOSYSTEM_REGISTRY.md)
+* [Historial de Cambios](CHANGELOG.md)
+* [Guía Técnica de Integración para el Staff](INTEGRACION_STAFF.md)
+* [Licencia MIT](LICENSE)
+
+---
+
 ## 📜 Créditos y Reconocimientos
 
 * **Diseño y Arquitectura:** [DarckRovert](https://github.com/DarckRovert)
 * **Comunidad y Servidor Destino:** [WoW Perú](https://wow-peru.lat/) - Reino Andino
-* **Licencia:** MIT License. Libre para uso, mejora y adaptación en el proyecto WoW Perú.
