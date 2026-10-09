@@ -17,10 +17,10 @@ El cliente de Project Jaina ya utiliza el archivo `Data/patch-Z-Project Jaina.MP
    ```
    Interface\
      └── AddOns\
-           └── Wanos_GameModes\
+           └── ProjectJaina_GameModes\
    ```
 4. Agrega los archivos del módulo:
-   * `Wanos_GameModes.toc`
+   * `ProjectJaina_GameModes.toc`
    * `Config.lua`
    * `Locales.lua`
    * `Core.lua`
@@ -29,7 +29,7 @@ El cliente de Project Jaina ya utiliza el archivo `Data/patch-Z-Project Jaina.MP
 6. Distribuye el archivo actualizado a través del launcher de Project Jaina. **Listo: ningún jugador podrá borrar el addon y se cargará automáticamente.**
 
 ### Método B: Distribución en la Carpeta Base del Cliente
-Si distribuyes el cliente completo en archivo `.zip` o instalador, simplemente coloca la carpeta `Wanos_GameModes` dentro de `World of Warcraft/Interface/AddOns/`.
+Si distribuyes el cliente completo en archivo `.zip` o instalador, simplemente coloca la carpeta `ProjectJaina_GameModes` dentro de `World of Warcraft/Interface/AddOns/`.
 
 ---
 

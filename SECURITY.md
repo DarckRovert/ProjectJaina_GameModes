@@ -8,11 +8,11 @@
 
 ## 1. Modelo de Seguridad
 
-**Wanos_GameModes** sigue el principio de **Autoridad Exclusiva del Servidor**:
+**ProjectJaina_GameModes** sigue el principio de **Autoridad Exclusiva del Servidor**:
 
 - El cliente (`Core.lua`, `UI.lua`) actúa únicamente como **presentador de opciones y emisor de intención**.
 - La selección de modo **no es válida hasta que el servidor la confirme** mediante el paquete `ACK:<modo>`.
-- El guardado local en `Wanos_GameModes_CharDB.hasSelectedMode` es una optimización de UX para evitar mostrar el selector repetidamente, pero **no tiene valor de autoridad** sobre el estado real en la base de datos del servidor.
+- El guardado local en `ProjectJaina_GameModes_CharDB.hasSelectedMode` es una optimización de UX para evitar mostrar el selector repetidamente, pero **no tiene valor de autoridad** sobre el estado real en la base de datos del servidor.
 
 ---
 
@@ -36,7 +36,7 @@
 
 ### 2.4. Validación Dual de Elegibilidad
 - El sistema verifica doble condición antes de abrir el selector:
-  1. `Wanos_GameModes_CharDB.hasSelectedMode == false` (bandera local).
+  1. `ProjectJaina_GameModes_CharDB.hasSelectedMode == false` (bandera local).
   2. `CheckServerAuras()` escanea las auras activas en busca de `"hardcore"` o `"ironman"`, cubriendo el caso de que el jugador borre su carpeta `WTF/` (reseteo de SavedVariables) en una cabina de internet.
 
 ### 2.5. Integridad en el Ciclo de Vida de Personajes
@@ -60,7 +60,7 @@ Si descubres un fallo que permita:
 
 - **Discord:** Busca a `DarckRovert` en el servidor oficial de Project Jaina.
 - **In-game:** Personaje `Elnazzareno` en el Project Jaina.
-- **Servidor web:** [https://projectjaina.com/](https://projectjaina.com/)
+- **Servidor web:** [https://darckrovert.github.io/ProjectJaina_Web/](https://darckrovert.github.io/ProjectJaina_Web/)
 
 Proporciona:
 1. Pasos detallados para reproducir el comportamiento.

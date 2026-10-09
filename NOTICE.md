@@ -1,4 +1,4 @@
-# 📜 Aviso Legal y Atribución — Wanos_GameModes
+# 📜 Aviso Legal y Atribución — ProjectJaina_GameModes
 
 Este repositorio forma parte del ecosistema oficial de **Project Jaina - Project Jaina**.
 Contiene el selector cinematográfico de modos de juego (Normal, Hardcore, Ironman, Reto Andino) para World of Warcraft 3.3.5a (Build 12340).
@@ -6,9 +6,9 @@ Contiene el selector cinematográfico de modos de juego (Normal, Hardcore, Ironm
 ---
 
 ## 1. Autoría y Desarrollo Oficial
-* **Desarrollador Principal:** DarckRovert (Ingame: `Elnazzareno`) & Project Jaina Team
-* **Ecosistema:** [Project Jaina — Project Jaina](https://projectjaina.com/)
-* **Repositorio Oficial:** [DarckRovert/Wanos_GameModes](https://github.com/DarckRovert/Wanos_GameModes)
+* **Desarrollador Principal:** DarckRovert (Ingame: `Elnazzareno`) & Antigravity (Mythos 5)
+* **Ecosistema:** [Project Jaina — Project Jaina](https://darckrovert.github.io/ProjectJaina_Web/)
+* **Repositorio Oficial:** [DarckRovert/ProjectJaina_GameModes](https://github.com/DarckRovert/ProjectJaina_GameModes)
 
 ---
 

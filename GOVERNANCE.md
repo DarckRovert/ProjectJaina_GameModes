@@ -3,14 +3,14 @@
 **Versión del Documento:** 1.0.0  
 **Fecha de Entrada en Vigor:** 27 de Septiembre de 2026  
 **Líder del Proyecto / Autor:** DarckRovert (Ingame: Elnazzareno)  
-**Servidor Destino:** [Project Jaina](https://projectjaina.com/) - Project Jaina  
+**Servidor Destino:** [Project Jaina](https://darckrovert.github.io/ProjectJaina_Web/) - Project Jaina  
 **Entorno de Ejecución:** World of Warcraft 3.3.5a (Build 12340) | Eluna Lua Engine (TrinityCore / AzerothCore)  
 
 ---
 
 ## 1. Misión y Alcance
 
-**Wanos_GameModes** es el selector cinematográfico nativo de modos de juego del servidor Project Jaina. Se activa en el primer inicio de sesión de cualquier personaje nuevo (Nivel 1, 0 XP) y ofrece una elección de destino irreversible entre 4 caminos:
+**ProjectJaina_GameModes** es el selector cinematográfico nativo de modos de juego del servidor Project Jaina. Se activa en el primer inicio de sesión de cualquier personaje nuevo (Nivel 1, 0 XP) y ofrece una elección de destino irreversible entre 4 caminos:
 
 - **Aventurero (Normal):** Experiencia Blizzlike clásica sin restricciones.
 - **Hardcore (1 Vida):** Muerte permanente, títulos y monturas exclusivas al Nivel 80.
@@ -83,7 +83,7 @@ Antes de proponer o aplicar un cambio, es **obligatorio** verificar el código f
 - **Despacho dinámico:** El addon intenta `GUILD` → `RAID` → `PARTY` → `SAY` en ese orden de prioridad para personajes sin grupo.
 
 ### 3.4. Inmutabilidad de la Decisión
-- Una vez que el personaje selecciona un modo, el flag `Wanos_GameModes_CharDB.hasSelectedMode = true` se fija localmente.
+- Una vez que el personaje selecciona un modo, el flag `ProjectJaina_GameModes_CharDB.hasSelectedMode = true` se fija localmente.
 - El servidor confirma mediante paquete `ACK:<modo>`. Solo el servidor puede revocar o cambiar un modo en condiciones especiales.
 
 ### 3.5. Seguridad de Base de Datos y Eluna
@@ -112,5 +112,5 @@ Antes de generar un nuevo release o actualizar el parche MPQ:
 2. [ ] Confirmar que todos los `OnUpdate` instalados se cancelan con `SetScript("OnUpdate", nil)` al finalizar.
 3. [ ] Probar in-game en personaje Nivel 1 con `/reload` sin errores Lua en consola.
 4. [ ] Verificar que `ACK:` del servidor es recibido y el flag `hasSelectedMode` queda en `true`.
-5. [ ] Generar el paquete ZIP `Wanos_GameModes_vX.Y.Z.zip`.
+5. [ ] Generar el paquete ZIP `ProjectJaina_GameModes_vX.Y.Z.zip`.
 6. [ ] Publicar en la sección de Releases de GitHub y notificar al Sysadmin para actualizar el MPQ.

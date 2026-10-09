@@ -1,7 +1,7 @@
 --[[
     ========================================================================
     Project Jaina - Selector de Modos de Juego (Game Modes Suite)
-    Reino: Project Jaina | Servidor: https://projectjaina.com/
+    Reino: Project Jaina | Servidor: https://darckrovert.github.io/ProjectJaina_Web/
     Cliente Compatible: World of Warcraft 3.3.5a (Build 12340)
     ========================================================================
     Archivo de Configuración para el Staff y Desarrolladores del Servidor.

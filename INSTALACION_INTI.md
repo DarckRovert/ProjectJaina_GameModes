@@ -1,11 +1,11 @@
-# Wanos_GameModes en Inti
+# ProjectJaina_GameModes en Inti
 
 Instalación local para revisar la interfaz del repositorio, exclusiva del reino `Inti (Pruebas)`.
 
-- Origen: https://github.com/DarckRovert/Wanos_GameModes
+- Origen: https://github.com/DarckRovert/ProjectJaina_GameModes
 - Revisión: `3dc0bcb18f22499161f3b021d088304652418124`
 - Cliente: WoW 3.3.5a, compilación 12340.
-- Carpeta: `C:\Users\vcarv\OneDrive\Desktop\WoW-Pe\Interface\AddOns\Wanos_GameModes`.
+- Carpeta: `C:\Users\vcarv\OneDrive\Desktop\WoW-Pe\Interface\AddOns\ProjectJaina_GameModes`.
 
 ## Uso
 

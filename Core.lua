@@ -130,24 +130,24 @@ end
 -- Manejador principal de eventos
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     local arg1, arg2, arg3, arg4 = ...
-    if event == "ADDON_LOADED" and (arg1 == "Wanos_GameModes" or arg1 == "ProjectJaina_GameModes") then
+    if event == "ADDON_LOADED" and (arg1 == "ProjectJaina_GameModes" or arg1 == "ProjectJaina_GameModes") then
         -- Inicialización de base de datos por personaje
-        Wanos_GameModes_CharDB = Wanos_GameModes_CharDB or ProjectJaina_GameModes_CharDB or {
+        ProjectJaina_GameModes_CharDB = ProjectJaina_GameModes_CharDB or ProjectJaina_GameModes_CharDB or {
             hasSelectedMode = false,
             selectedMode = nil,
             timestamp = nil,
         }
-        ProjectJaina_GameModes_CharDB = Wanos_GameModes_CharDB
+        ProjectJaina_GameModes_CharDB = ProjectJaina_GameModes_CharDB
             hasSelectedMode = false,
             selectedMode = nil,
             timestamp = nil,
         }
         
         -- Inicialización de base de datos global de cuenta
-        Wanos_GameModes_GlobalDB = Wanos_GameModes_GlobalDB or ProjectJaina_GameModes_GlobalDB or {
+        ProjectJaina_GameModes_GlobalDB = ProjectJaina_GameModes_GlobalDB or ProjectJaina_GameModes_GlobalDB or {
             version = "1.0.0",
         }
-        ProjectJaina_GameModes_GlobalDB = Wanos_GameModes_GlobalDB
+        ProjectJaina_GameModes_GlobalDB = ProjectJaina_GameModes_GlobalDB
             version = "1.0.0",
         }
         
