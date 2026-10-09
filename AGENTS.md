@@ -2,7 +2,7 @@
 
 > **Repositorio Oficial:** [DarckRovert/Wanos_GameModes](https://github.com/DarckRovert/Wanos_GameModes)  
 > **Líder del Proyecto:** DarckRovert (Ingame: `Elnazzareno`)  
-> **Servidor Destino:** [Project Jaina](https://worldofwanos.com/) - Project Jaina  
+> **Servidor Destino:** [Project Jaina](https://projectjaina.com/) - Project Jaina  
 > **Entorno:** WotLK 3.3.5a (Build 12340) | Motor Eluna Lua Engine  
 
 ---

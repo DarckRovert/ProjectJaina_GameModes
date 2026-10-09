@@ -1,7 +1,7 @@
 # 🔌 Especificación Técnica y API — Wanos_GameModes
 
 [![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FWanos_GameModes-black?logo=github)](https://github.com/DarckRovert/Wanos_GameModes)
-[![Ecosistema](https://img.shields.io/badge/Ecosistema-WoW%20Per%C3%BA%203.3.5a-gold.svg)](https://worldofwanos.com/)
+[![Ecosistema](https://img.shields.io/badge/Ecosistema-WoW%20Per%C3%BA%203.3.5a-gold.svg)](https://projectjaina.com/)
 
 ## 📌 Resumen Arquitectónico
 Selector de modos de juego (Normal, Hardcore, Ironman) al crear personaje, con prevención de exploits en resurrección y validación atómica en Eluna.

@@ -2,14 +2,14 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FWanos_GameModes-black?logo=github)](https://github.com/DarckRovert/Wanos_GameModes)
 
-[![WoW Client](https://img.shields.io/badge/WoW%20Client-3.3.5a%20(Build%2012340)-blue.svg)](https://worldofwanos.com/)
-[![Server](https://img.shields.io/badge/Servidor-WoW%20Perú-gold.svg)](https://worldofwanos.com/)
-[![Realm](https://img.shields.io/badge/Reino-Reino%20Andino-red.svg)](https://worldofwanos.com/)
+[![WoW Client](https://img.shields.io/badge/WoW%20Client-3.3.5a%20(Build%2012340)-blue.svg)](https://projectjaina.com/)
+[![Server](https://img.shields.io/badge/Servidor-WoW%20Perú-gold.svg)](https://projectjaina.com/)
+[![Realm](https://img.shields.io/badge/Reino-Reino%20Andino-red.svg)](https://projectjaina.com/)
 [![License](https://img.shields.io/badge/Licencia-MIT-green.svg)](LICENSE)
 
 **Módulo nativo y cinematográfico de selección de modos de juego para nuevos personajes en el servidor privado Project Jaina (Project Jaina).**
 
-Desarrollado en colaboración para [Project Jaina](https://worldofwanos.com/).
+Desarrollado en colaboración para [Project Jaina](https://projectjaina.com/).
 
 ---
 
@@ -103,4 +103,4 @@ Este proyecto está licenciado bajo los términos de la **Licencia MIT**. Consul
 ## 📜 Créditos y Reconocimientos
 
 * **Diseño y Arquitectura:** [DarckRovert](https://github.com/DarckRovert)
-* **Comunidad y Servidor Destino:** [Project Jaina](https://worldofwanos.com/) - Project Jaina
+* **Comunidad y Servidor Destino:** [Project Jaina](https://projectjaina.com/) - Project Jaina

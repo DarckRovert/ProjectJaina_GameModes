@@ -60,7 +60,7 @@ Si descubres un fallo que permita:
 
 - **Discord:** Busca a `DarckRovert` en el servidor oficial de Project Jaina.
 - **In-game:** Personaje `Elnazzareno` en el Project Jaina.
-- **Servidor web:** [https://worldofwanos.com/](https://worldofwanos.com/)
+- **Servidor web:** [https://projectjaina.com/](https://projectjaina.com/)
 
 Proporciona:
 1. Pasos detallados para reproducir el comportamiento.

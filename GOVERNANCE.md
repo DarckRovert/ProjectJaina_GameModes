@@ -3,7 +3,7 @@
 **Versión del Documento:** 1.0.0  
 **Fecha de Entrada en Vigor:** 27 de Septiembre de 2026  
 **Líder del Proyecto / Autor:** DarckRovert (Ingame: Elnazzareno)  
-**Servidor Destino:** [Project Jaina](https://worldofwanos.com/) - Project Jaina  
+**Servidor Destino:** [Project Jaina](https://projectjaina.com/) - Project Jaina  
 **Entorno de Ejecución:** World of Warcraft 3.3.5a (Build 12340) | Eluna Lua Engine (TrinityCore / AzerothCore)  
 
 ---
