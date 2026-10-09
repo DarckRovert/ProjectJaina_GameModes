@@ -1,10 +1,10 @@
 --[[
-    WoW Perú - Selector de Modos de Juego (UI.lua)
+    Project Jaina - Selector de Modos de Juego (UI.lua)
     Interfaz de usuario cinematográfica, tarjetas interactivas y modal de confirmación.
 ]]
 
-WoWPeru_GameModes = WoWPeru_GameModes or {}
-local M = WoWPeru_GameModes
+ProjectJaina_GameModes = ProjectJaina_GameModes or {}
+local M = ProjectJaina_GameModes
 
 local mainFrame = nil
 local confirmDialog = nil
@@ -46,7 +46,7 @@ local function CreateConfirmDialog()
     if confirmDialog then return confirmDialog end
 
     -- Frame raíz modal a pantalla completa (bloquea clics en las tarjetas traseras)
-    local blocker = CreateFrame("Frame", "WoWPeru_ConfirmBlocker", UIParent)
+    local blocker = CreateFrame("Frame", "ProjectJaina_ConfirmBlocker", UIParent)
     blocker:SetAllPoints(UIParent)
     blocker:SetFrameStrata("FULLSCREEN_DIALOG")
     blocker:SetFrameLevel(110)
@@ -60,25 +60,25 @@ local function CreateConfirmDialog()
     blockerScrim:SetVertexColor(0, 0, 0, 0.65)
 
     -- Cuadro centrado de advertencia
-    local dlg = CreateFrame("Frame", "WoWPeru_ConfirmDialog", blocker)
+    local dlg = CreateFrame("Frame", "ProjectJaina_ConfirmDialog", blocker)
     dlg:SetSize(480, 290)
     dlg:SetPoint("CENTER", blocker, "CENTER", 0, 0)
     dlg:EnableMouse(true)
 
     dlg:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Destruction-Border",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
         tile = true,
         tileSize = 32,
         edgeSize = 32,
-        insets = { left = 11, right = 11, top = 12, bottom = 11 }
+        insets = { left = 9, right = 9, top = 9, bottom = 9 }
     })
 
-    -- Logo Oficial de WoW Perú
+    -- Logo Oficial de Project Jaina
     local dlgLogo = dlg:CreateTexture(nil, "ARTWORK")
     dlgLogo:SetSize(60, 30)
     dlgLogo:SetPoint("TOP", dlg, "TOP", 0, -8)
-    dlgLogo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    dlgLogo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
     dlg.logo = dlgLogo
 
     -- Título de Advertencia
@@ -104,7 +104,7 @@ local function CreateConfirmDialog()
     dlg.text = text
 
     -- Botón de Confirmación Definitiva (con captura atómica previa a Hide)
-    local btnAccept = CreateFrame("Button", "WoWPeru_ConfirmAcceptBtn", dlg, "UIPanelButtonTemplate")
+    local btnAccept = CreateFrame("Button", "ProjectJaina_ConfirmAcceptBtn", dlg, "UIPanelButtonTemplate")
     btnAccept:SetSize(190, 32)
     btnAccept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 35, 24)
     btnAccept:SetText(M.L["CONFIRM_BUTTON"] or "¡Acepto el Desafío!")
@@ -118,7 +118,7 @@ local function CreateConfirmDialog()
     dlg.btnAccept = btnAccept
 
     -- Botón de Cancelar / Volver
-    local btnCancel = CreateFrame("Button", "WoWPeru_ConfirmCancelBtn", dlg, "UIPanelButtonTemplate")
+    local btnCancel = CreateFrame("Button", "ProjectJaina_ConfirmCancelBtn", dlg, "UIPanelButtonTemplate")
     btnCancel:SetSize(150, 32)
     btnCancel:SetPoint("BOTTOMRIGHT", dlg, "BOTTOMRIGHT", -35, 24)
     btnCancel:SetText(M.L["CANCEL_BUTTON"] or "Volver Atrás")
@@ -134,7 +134,7 @@ local function CreateConfirmDialog()
 
     -- Registro prioritario en la posición 1 de UISpecialFrames:
     -- Garantiza que CloseWindows() cierre el diálogo de confirmación ANTES que la ventana base
-    RegisterSpecialFrame("WoWPeru_ConfirmBlocker", true)
+    RegisterSpecialFrame("ProjectJaina_ConfirmBlocker", true)
 
     confirmDialog = blocker
     confirmDialog.dlg = dlg
@@ -159,7 +159,7 @@ local function CreateModeCard(parent, mode, index, totalModes)
     local startX = -(totalWidth / 2) + (cardWidth / 2)
     local posX = startX + ((index - 1) * (cardWidth + spacing))
 
-    local card = CreateFrame("Button", "WoWPeru_Card_" .. mode.id, parent)
+    local card = CreateFrame("Button", "ProjectJaina_Card_" .. mode.id, parent)
     card:SetSize(cardWidth, cardHeight)
     card:SetPoint("CENTER", parent, "CENTER", posX, -25)
     card:EnableMouse(true)
@@ -169,7 +169,7 @@ local function CreateModeCard(parent, mode, index, totalModes)
 
     -- Efecto Hover Anti-Flicker y preservación de modo activo
     local function ApplyHoverState(isHovered)
-        local isCurrent = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode == mode.id)
+        local isCurrent = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode == mode.id)
         if isHovered or isCurrent then
             card:SetBackdropBorderColor(accent[1], accent[2], accent[3], 1.0)
             card:SetBackdropColor(0.10, 0.10, 0.13, 0.98)
@@ -257,8 +257,8 @@ local function CreateModeCard(parent, mode, index, totalModes)
     btn:SetSize(160, 30)
     btn:SetPoint("BOTTOM", card, "BOTTOM", 0, 18)
 
-    local isCurrentMode = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode == mode.id)
-    local hasAlreadyLocked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode)
+    local isCurrentMode = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode == mode.id)
+    local hasAlreadyLocked = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode)
 
     if isCurrentMode then
         btn:SetText(M.L["SELECTED_BADGE"] or "SELECCIONADO")
@@ -272,7 +272,7 @@ local function CreateModeCard(parent, mode, index, totalModes)
     end
     
     local function HandleSelect()
-        if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then
+        if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then
             return
         end
         if mode.requireConfirmation then
@@ -327,14 +327,14 @@ local function CreateMainUI()
     end
 
     -- Frame raíz modal a pantalla completa
-    local root = CreateFrame("Frame", "WoWPeru_GameModes_MainFrame", UIParent)
+    local root = CreateFrame("Frame", "ProjectJaina_GameModes_MainFrame", UIParent)
     root:SetAllPoints(UIParent)
     root:SetFrameStrata("FULLSCREEN_DIALOG")
     root:EnableMouse(true)
     root:Hide()
 
     -- Registro seguro del marco base en UISpecialFrames
-    RegisterSpecialFrame("WoWPeru_GameModes_MainFrame", false)
+    RegisterSpecialFrame("ProjectJaina_GameModes_MainFrame", false)
 
     -- Capa de viñeta / Fondo oscuro que oscurece el mundo 3D
     local scrim = root:CreateTexture(nil, "BACKGROUND")
@@ -357,17 +357,17 @@ local function CreateMainUI()
     root.container = container
     UpdateContainerScale(container)
 
-    -- Logo Oficial de WoW Perú
+    -- Logo Oficial de Project Jaina
     local logo = container:CreateTexture(nil, "ARTWORK")
     logo:SetSize(110, 55)
     logo:SetPoint("TOPLEFT", container, "TOPLEFT", 20, -12)
-    logo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    logo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
     container.logo = logo
 
     -- Encabezado: Servidor y Reino
     local headerLogo = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     headerLogo:SetPoint("TOP", container, "TOP", 0, -20)
-    headerLogo:SetText(string.format("|cFFD4AF37%s|r  —  |cFFFFFFFF%s|r", M.Config.ServerName or "WoW Perú", M.Config.RealmName or "Reino Andino"))
+    headerLogo:SetText(string.format("|cFFD4AF37%s|r  —  |cFFFFFFFF%s|r", M.Config.ServerName or "Project Jaina", M.Config.RealmName or "Project Jaina"))
 
     -- Título Principal
     local headerTitle = container:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
@@ -434,8 +434,8 @@ end
 local function UpdateCardsState()
     if not mainFrame or not mainFrame.container or not mainFrame.container.cards then return end
     
-    local isLocked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode)
-    local currentMode = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode)
+    local isLocked = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode)
+    local currentMode = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode)
 
     for _, card in ipairs(mainFrame.container.cards) do
         if card.modeData and card.actionBtn then
@@ -466,8 +466,8 @@ function M:OpenSelectionUI()
     UpdateCardsState()
     
     -- Si ya seleccionó anteriormente, mostrar aviso informativo pero permitir ver las opciones
-    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then
-        DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], WoWPeru_GameModes_CharDB.selectedMode or "Desconocido"))
+    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then
+        DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], ProjectJaina_GameModes_CharDB.selectedMode or "Desconocido"))
     end
 
     if M.Config.SoundOnOpen then

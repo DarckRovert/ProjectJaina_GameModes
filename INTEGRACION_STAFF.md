@@ -1,6 +1,6 @@
-# 📘 Guía de Integración Técnica para el Staff de WoW Perú
+# 📘 Guía de Integración Técnica para el Staff de Project Jaina
 
-Este documento está dirigido al **administrador o desarrollador de backend/core de WoW Perú**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (AzerothCore o TrinityCore).
+Este documento está dirigido al **administrador o desarrollador de backend/core de Project Jaina**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (AzerothCore o TrinityCore).
 
 ---
 
@@ -9,27 +9,27 @@ Este documento está dirigido al **administrador o desarrollador de backend/core
 Para que el selector aparezca de forma nativa a todo jugador que descargue el cliente del servidor, existen dos métodos de distribución:
 
 ### Método A: Inyección en el Parche MPQ Oficial (Recomendado)
-El cliente de WoW Perú ya utiliza el archivo `Data/patch-Z-WOWPERU.MPQ` para sobrescribir archivos del juego.
+El cliente de Project Jaina ya utiliza el archivo `Data/patch-Z-Project Jaina.MPQ` para sobrescribir archivos del juego.
 
 1. Descarga y abre **MPQEditor** (o herramienta similar de manipulación de MPQs de Blizzard).
-2. Abre el archivo `Data/patch-Z-WOWPERU.MPQ`.
+2. Abre el archivo `Data/patch-Z-Project Jaina.MPQ`.
 3. Navega a la estructura de carpetas:
    ```
    Interface\
      └── AddOns\
-           └── WoWPeru_GameModes\
+           └── Wanos_GameModes\
    ```
 4. Agrega los archivos del módulo:
-   * `WoWPeru_GameModes.toc`
+   * `Wanos_GameModes.toc`
    * `Config.lua`
    * `Locales.lua`
    * `Core.lua`
    * `UI.lua`
 5. Guarda y compacta el MPQ.
-6. Distribuye el archivo actualizado a través del launcher de WoW Perú. **Listo: ningún jugador podrá borrar el addon y se cargará automáticamente.**
+6. Distribuye el archivo actualizado a través del launcher de Project Jaina. **Listo: ningún jugador podrá borrar el addon y se cargará automáticamente.**
 
 ### Método B: Distribución en la Carpeta Base del Cliente
-Si distribuyes el cliente completo en archivo `.zip` o instalador, simplemente coloca la carpeta `WoWPeru_GameModes` dentro de `World of Warcraft/Interface/AddOns/`.
+Si distribuyes el cliente completo en archivo `.zip` o instalador, simplemente coloca la carpeta `Wanos_GameModes` dentro de `World of Warcraft/Interface/AddOns/`.
 
 ---
 
@@ -84,7 +84,7 @@ local function ProcessGameMode(player, mode)
     if mode == "SET_MODE:HARDCORE" then
         -- 1. Lógica del core: activar Hardcore en DB o añadir aura
         -- player:AddAura(80000, player) 
-        player:SendBroadcastMessage("|cFFD4AF37[WoW Perú]|r ¡Modo Hardcore activado con éxito!")
+        player:SendBroadcastMessage("|cFFD4AF37[Project Jaina]|r ¡Modo Hardcore activado con éxito!")
         -- 2. Enviar confirmación ACK al cliente para sellar la UI
         player:SendAddonMessage(PREFIX, "ACK:HARDCORE", 0, player)
 
@@ -120,7 +120,7 @@ RegisterPlayerEvent(42, OnPlayerCommand)
 
 ## 4. ¿No tienen aún un Módulo Hardcore en el Backend?
 
-Si el equipo de WoW Perú aún no ha implementado la lógica de muerte permanente en el emulador, la recomendación de ingeniería estándar es utilizar el módulo oficial de la comunidad:
+Si el equipo de Project Jaina aún no ha implementado la lógica de muerte permanente en el emulador, la recomendación de ingeniería estándar es utilizar el módulo oficial de la comunidad:
 
 * **Módulo Oficial AzerothCore:** [`azerothcore/mod-hardcore`](https://github.com/azerothcore/mod-hardcore)
 * **Funcionalidades que incluye:**

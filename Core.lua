@@ -1,13 +1,13 @@
 --[[
-    WoW Perú - Selector de Modos de Juego (Core.lua)
+    Project Jaina - Selector de Modos de Juego (Core.lua)
     Lógica de eventos, comprobación de primer ingreso y despacho de red.
 ]]
 
-WoWPeru_GameModes = WoWPeru_GameModes or {}
-local M = WoWPeru_GameModes
+ProjectJaina_GameModes = ProjectJaina_GameModes or {}
+local M = ProjectJaina_GameModes
 
 -- Inicialización del marco de eventos
-local eventFrame = CreateFrame("Frame", "WoWPeru_GameModes_EventFrame", UIParent)
+local eventFrame = CreateFrame("Frame", "ProjectJaina_GameModes_EventFrame", UIParent)
 M.eventFrame = eventFrame
 
 -- Registro de eventos clave y de seguridad
@@ -52,15 +52,15 @@ local function CheckServerAuras()
         if not name then break end
         local lowerName = string.lower(name)
         if string.find(lowerName, "hardcore") then
-            if WoWPeru_GameModes_CharDB then
-                WoWPeru_GameModes_CharDB.hasSelectedMode = true
-                WoWPeru_GameModes_CharDB.selectedMode = "HARDCORE"
+            if ProjectJaina_GameModes_CharDB then
+                ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                ProjectJaina_GameModes_CharDB.selectedMode = "HARDCORE"
             end
             return true
         elseif string.find(lowerName, "ironman") then
-            if WoWPeru_GameModes_CharDB then
-                WoWPeru_GameModes_CharDB.hasSelectedMode = true
-                WoWPeru_GameModes_CharDB.selectedMode = "IRONMAN"
+            if ProjectJaina_GameModes_CharDB then
+                ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                ProjectJaina_GameModes_CharDB.selectedMode = "IRONMAN"
             end
             return true
         end
@@ -71,7 +71,7 @@ end
 -- Comprobación robusta de elegibilidad para nuevo personaje
 local function IsEligibleForPrompt()
     if not M.Config.AutoOpenOnFirstLogin then return false end
-    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode then return false end
+    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then return false end
     if CheckServerAuras() then return false end
 
     local level = UnitLevel("player")
@@ -110,7 +110,7 @@ local function ExecuteServerCommand(cmd)
     else
         -- Salvaguarda: Jamás filtrar comandos como texto en /say
         if DEFAULT_CHAT_FRAME then
-            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF4444[WoW Perú]|r No se pudo despachar el comando del modo: " .. tostring(cmd))
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF4444[Project Jaina]|r No se pudo despachar el comando del modo: " .. tostring(cmd))
         end
     end
 end
@@ -130,16 +130,24 @@ end
 -- Manejador principal de eventos
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     local arg1, arg2, arg3, arg4 = ...
-    if event == "ADDON_LOADED" and arg1 == "WoWPeru_GameModes" then
+    if event == "ADDON_LOADED" and (arg1 == "Wanos_GameModes" or arg1 == "ProjectJaina_GameModes") then
         -- Inicialización de base de datos por personaje
-        WoWPeru_GameModes_CharDB = WoWPeru_GameModes_CharDB or {
+        Wanos_GameModes_CharDB = Wanos_GameModes_CharDB or ProjectJaina_GameModes_CharDB or {
+            hasSelectedMode = false,
+            selectedMode = nil,
+            timestamp = nil,
+        }
+        ProjectJaina_GameModes_CharDB = Wanos_GameModes_CharDB
             hasSelectedMode = false,
             selectedMode = nil,
             timestamp = nil,
         }
         
         -- Inicialización de base de datos global de cuenta
-        WoWPeru_GameModes_GlobalDB = WoWPeru_GameModes_GlobalDB or {
+        Wanos_GameModes_GlobalDB = Wanos_GameModes_GlobalDB or ProjectJaina_GameModes_GlobalDB or {
+            version = "1.0.0",
+        }
+        ProjectJaina_GameModes_GlobalDB = Wanos_GameModes_GlobalDB
             version = "1.0.0",
         }
         
@@ -160,9 +168,9 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 
     elseif event == "PLAYER_REGEN_DISABLED" then
         -- Protección de vida: cerrar modal inmediatamente si entra en combate
-        if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+        if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then
             M:CloseSelectionUI()
-            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú]|r Has entrado en combate. El selector se ha cerrado para protegerte.")
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[Project Jaina]|r Has entrado en combate. El selector se ha cerrado para protegerte.")
         end
 
     elseif event == "PLAYER_REGEN_ENABLED" then
@@ -181,30 +189,30 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             -- 1. Confirmación de activación exitosa desde el backend
             if string.find(message, "^ACK:") then
                 local modeAck = string.sub(message, 5)
-                if WoWPeru_GameModes_CharDB then
-                    WoWPeru_GameModes_CharDB.hasSelectedMode = true
-                    WoWPeru_GameModes_CharDB.selectedMode = modeAck
+                if ProjectJaina_GameModes_CharDB then
+                    ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                    ProjectJaina_GameModes_CharDB.selectedMode = modeAck
                 end
-                if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+                if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then
                     M:CloseSelectionUI()
                 end
             -- 2. Reporte de estado desde el servidor (re-sincronización)
             elseif string.find(message, "^STATUS:") then
                 local serverMode = string.sub(message, 8)
                 if serverMode ~= "NONE" then
-                    if WoWPeru_GameModes_CharDB then
-                        WoWPeru_GameModes_CharDB.hasSelectedMode = true
-                        WoWPeru_GameModes_CharDB.selectedMode = serverMode
+                    if ProjectJaina_GameModes_CharDB then
+                        ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                        ProjectJaina_GameModes_CharDB.selectedMode = serverMode
                     end
                     -- Si el menú de selección estaba en pantalla, cerrarlo de inmediato
-                    if WoWPeru_GameModes_MainFrame and WoWPeru_GameModes_MainFrame:IsShown() then
+                    if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then
                         M:CloseSelectionUI()
                     end
                 else
                     -- El servidor confirma que es un personaje virgen sin modo asignado
-                    if WoWPeru_GameModes_CharDB then
-                        WoWPeru_GameModes_CharDB.hasSelectedMode = false
-                        WoWPeru_GameModes_CharDB.selectedMode = nil
+                    if ProjectJaina_GameModes_CharDB then
+                        ProjectJaina_GameModes_CharDB.hasSelectedMode = false
+                        ProjectJaina_GameModes_CharDB.selectedMode = nil
                     end
                     if IsEligibleForPrompt() and not InCombatLockdown() then
                         M:OpenSelectionUI()
@@ -213,11 +221,11 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             -- 3. Error devuelto por el servidor
             elseif string.find(message, "^ERR:") then
                 local errMsg = string.sub(message, 5)
-                DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú] Error del Servidor:|r " .. errMsg)
+                DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[Project Jaina] Error del Servidor:|r " .. errMsg)
                 -- Desbloquear localmente para permitir reintento si fue rechazado
-                if WoWPeru_GameModes_CharDB then
-                    WoWPeru_GameModes_CharDB.hasSelectedMode = false
-                    WoWPeru_GameModes_CharDB.selectedMode = nil
+                if ProjectJaina_GameModes_CharDB then
+                    ProjectJaina_GameModes_CharDB.hasSelectedMode = false
+                    ProjectJaina_GameModes_CharDB.selectedMode = nil
                 end
             end
         end
@@ -230,8 +238,8 @@ end)
 -- Función pública para aplicar el modo seleccionado (con protección de inmutabilidad)
 function M:ApplyMode(modeId, force)
     -- Candado de seguridad: Evitar sobrescritura si ya está bloqueado
-    if WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode and not force then
-        local current = WoWPeru_GameModes_CharDB.selectedMode or "Desconocido"
+    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode and not force then
+        local current = ProjectJaina_GameModes_CharDB.selectedMode or "Desconocido"
         DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], current))
         M:CloseSelectionUI()
         return
@@ -246,14 +254,14 @@ function M:ApplyMode(modeId, force)
     end
 
     if not selectedMode then
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000[WoW Perú] Error: Modo no encontrado: " .. tostring(modeId))
+        DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000[Project Jaina] Error: Modo no encontrado: " .. tostring(modeId))
         return
     end
 
     -- Guardar estado localmente en el personaje
-    WoWPeru_GameModes_CharDB.hasSelectedMode = true
-    WoWPeru_GameModes_CharDB.selectedMode = selectedMode.id
-    WoWPeru_GameModes_CharDB.timestamp = time()
+    ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+    ProjectJaina_GameModes_CharDB.selectedMode = selectedMode.id
+    ProjectJaina_GameModes_CharDB.timestamp = time()
 
     -- Ejecutar despacho según configuración
     local method = M.Config.DispatchMethod or "BOTH"
@@ -292,20 +300,20 @@ SlashCmdList["WOWPERU_MODES"] = function(msg)
     if cmd == "" or cmd == "show" or cmd == "menu" then
         M:OpenSelectionUI()
     elseif cmd == "status" then
-        local current = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.selectedMode) or "Ninguno"
-        local locked = (WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode) and "Sí" or "No"
+        local current = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode) or "Ninguno"
+        local locked = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode) and "Sí" or "No"
         DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["STATUS_COMMAND"], UnitName("player"), current, locked))
     elseif cmd == "reset" then
         -- Candado de seguridad para producción: solo permitido si Debug está activo
         if not M.Config.Debug then
-            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[WoW Perú]|r El reseteo de modo solo está disponible en modo depuración (Config.Debug = true).")
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF2020[Project Jaina]|r El reseteo de modo solo está disponible en modo depuración (Config.Debug = true).")
             return
         end
 
-        if WoWPeru_GameModes_CharDB then
-            WoWPeru_GameModes_CharDB.hasSelectedMode = false
-            WoWPeru_GameModes_CharDB.selectedMode = nil
-            WoWPeru_GameModes_CharDB.timestamp = nil
+        if ProjectJaina_GameModes_CharDB then
+            ProjectJaina_GameModes_CharDB.hasSelectedMode = false
+            ProjectJaina_GameModes_CharDB.selectedMode = nil
+            ProjectJaina_GameModes_CharDB.timestamp = nil
         end
         DEFAULT_CHAT_FRAME:AddMessage(M.L["RESET_SUCCESS"])
     else

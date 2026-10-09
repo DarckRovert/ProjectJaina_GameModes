@@ -1,14 +1,14 @@
-# 📜 Aviso Legal y Atribución — WoWPeru_GameModes
+# 📜 Aviso Legal y Atribución — Wanos_GameModes
 
-Este repositorio forma parte del ecosistema oficial de **WoW Perú - Reino Andino**.
+Este repositorio forma parte del ecosistema oficial de **Project Jaina - Project Jaina**.
 Contiene el selector cinematográfico de modos de juego (Normal, Hardcore, Ironman, Reto Andino) para World of Warcraft 3.3.5a (Build 12340).
 
 ---
 
 ## 1. Autoría y Desarrollo Oficial
-* **Desarrollador Principal:** DarckRovert (Ingame: `Elnazzareno`) & WoW Perú Team
-* **Ecosistema:** [WoW Perú — Reino Andino](https://wow-peru.lat/)
-* **Repositorio Oficial:** [DarckRovert/WoWPeru_GameModes](https://github.com/DarckRovert/WoWPeru_GameModes)
+* **Desarrollador Principal:** DarckRovert (Ingame: `Elnazzareno`) & Project Jaina Team
+* **Ecosistema:** [Project Jaina — Project Jaina](https://worldofwanos.com/)
+* **Repositorio Oficial:** [DarckRovert/Wanos_GameModes](https://github.com/DarckRovert/Wanos_GameModes)
 
 ---
 

@@ -1,4 +1,4 @@
-# 📋 Registro de Cambios (Changelog) - WoW Perú Game Modes
+# 📋 Registro de Cambios (Changelog) - Project Jaina Game Modes
 
 Todos los cambios notables en este proyecto se documentarán en este archivo.  
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
@@ -17,9 +17,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/
 
 ## [1.0.0] - 2026-09-27
 
-### 🎉 Lanzamiento Oficial - WoW Perú Game Modes Suite
+### 🎉 Lanzamiento Oficial - Project Jaina Game Modes Suite
 
-Primera versión de producción del selector cinematográfico de modos de juego de WoW Perú, diseñada para clientes WotLK 3.3.5a (Build 12340) y servidores TrinityCore/AzerothCore con motor Eluna.
+Primera versión de producción del selector cinematográfico de modos de juego de Project Jaina, diseñada para clientes WotLK 3.3.5a (Build 12340) y servidores TrinityCore/AzerothCore con motor Eluna.
 
 ### ✨ Nuevas Funcionalidades
 

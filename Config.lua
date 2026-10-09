@@ -1,7 +1,7 @@
 --[[
     ========================================================================
-    WoW Perú - Selector de Modos de Juego (Game Modes Suite)
-    Reino: Reino Andino | Servidor: https://wow-peru.lat/
+    Project Jaina - Selector de Modos de Juego (Game Modes Suite)
+    Reino: Project Jaina | Servidor: https://worldofwanos.com/
     Cliente Compatible: World of Warcraft 3.3.5a (Build 12340)
     ========================================================================
     Archivo de Configuración para el Staff y Desarrolladores del Servidor.
@@ -9,13 +9,13 @@
     y definir los comandos o paquetes que se enviarán al servidor.
 ]]
 
-WoWPeru_GameModes = WoWPeru_GameModes or {}
-local M = WoWPeru_GameModes
+ProjectJaina_GameModes = ProjectJaina_GameModes or {}
+local M = ProjectJaina_GameModes
 
 M.Config = {
     -- Título y branding superior de la ventana
-    ServerName = "WoW Perú",
-    RealmName = "Reino Andino",
+    ServerName = "Project Jaina",
+    RealmName = "Project Jaina",
     HeaderTitle = "ELIGE TU DESTINO",
     HeaderSubtitle = "Selecciona el modo de juego para este personaje. Tu camino forjará tu leyenda.",
 
@@ -80,7 +80,7 @@ M.Config = {
             addonPayload = "SET_MODE:HARDCORE",
             requireConfirmation = true,
             confirmTitle = "¡ADVERTENCIA DE MUERTE PERMANENTE!",
-            confirmWarning = "Estás a punto de activar el MODO HARDCORE.\n\nSi tu personaje muere por cualquier motivo (caídas, criaturas, fatiga o PvP), NO PODRÁS RESUCITAR JAMÁS en el Reino Andino.\n\n¿Tienes el valor de aceptar este destino?",
+            confirmWarning = "Estás a punto de activar el MODO HARDCORE.\n\nSi tu personaje muere por cualquier motivo (caídas, criaturas, fatiga o PvP), NO PODRÁS RESUCITAR JAMÁS en el Project Jaina.\n\n¿Tienes el valor de aceptar este destino?",
         },
         {
             id = "IRONMAN",

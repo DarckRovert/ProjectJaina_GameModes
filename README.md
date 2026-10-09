@@ -1,15 +1,15 @@
-# ⚔️ WoW Perú - Selector de Modos de Juego (Game Modes Suite)
+# ⚔️ Project Jaina - Selector de Modos de Juego (Game Modes Suite)
 
-[![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FWoWPeru_GameModes-black?logo=github)](https://github.com/DarckRovert/WoWPeru_GameModes)
+[![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FWanos_GameModes-black?logo=github)](https://github.com/DarckRovert/Wanos_GameModes)
 
-[![WoW Client](https://img.shields.io/badge/WoW%20Client-3.3.5a%20(Build%2012340)-blue.svg)](https://wow-peru.lat/)
-[![Server](https://img.shields.io/badge/Servidor-WoW%20Perú-gold.svg)](https://wow-peru.lat/)
-[![Realm](https://img.shields.io/badge/Reino-Reino%20Andino-red.svg)](https://wow-peru.lat/)
+[![WoW Client](https://img.shields.io/badge/WoW%20Client-3.3.5a%20(Build%2012340)-blue.svg)](https://worldofwanos.com/)
+[![Server](https://img.shields.io/badge/Servidor-WoW%20Perú-gold.svg)](https://worldofwanos.com/)
+[![Realm](https://img.shields.io/badge/Reino-Reino%20Andino-red.svg)](https://worldofwanos.com/)
 [![License](https://img.shields.io/badge/Licencia-MIT-green.svg)](LICENSE)
 
-**Módulo nativo y cinematográfico de selección de modos de juego para nuevos personajes en el servidor privado WoW Perú (Reino Andino).**
+**Módulo nativo y cinematográfico de selección de modos de juego para nuevos personajes en el servidor privado Project Jaina (Project Jaina).**
 
-Desarrollado en colaboración para [WoW Perú](https://wow-peru.lat/).
+Desarrollado en colaboración para [Project Jaina](https://worldofwanos.com/).
 
 ---
 
@@ -17,7 +17,7 @@ Desarrollado en colaboración para [WoW Perú](https://wow-peru.lat/).
 
 En World of Warcraft 3.3.5a nativo no existe un selector de modos de juego en la creación de personajes. Este proyecto resuelve la fricción de experiencia de usuario (UX) ofreciendo una **pantalla cinematográfica de bienvenida y elección de destino** en el primer ingreso al mundo (Nivel 1, 0 XP).
 
-El jugador no necesita descargar ningún addon externo de internet si el staff del servidor empaqueta este módulo dentro de su parche oficial `patch-Z-WOWPERU.MPQ` o en el cliente de distribución.
+El jugador no necesita descargar ningún addon externo de internet si el staff del servidor empaqueta este módulo dentro de su parche oficial `patch-Z-Project Jaina.MPQ` o en el cliente de distribución.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -55,8 +55,8 @@ El jugador no necesita descargar ningún addon externo de internet si el staff d
 ## 📂 Estructura del Addon
 
 ```
-Interface/AddOns/WoWPeru_GameModes/
-├── WoWPeru_GameModes.toc       # Metadatos del addon para cliente 3.3.5a
+Interface/AddOns/Wanos_GameModes/
+├── Wanos_GameModes.toc       # Metadatos del addon para cliente 3.3.5a
 ├── Config.lua                  # Catálogo de modos, comandos y parámetros
 ├── Locales.lua                 # Textos en español (con fallback a inglés)
 ├── Core.lua                    # Detección de login, guardado y despacho de red
@@ -79,7 +79,7 @@ Interface/AddOns/WoWPeru_GameModes/
 
 ## 🛠️ Instalación Rápida para Pruebas
 
-1. Clona o copia la carpeta `WoWPeru_GameModes` dentro de tu directorio `World of Warcraft/Interface/AddOns/`.
+1. Clona o copia la carpeta `Wanos_GameModes` dentro de tu directorio `World of Warcraft/Interface/AddOns/`.
 2. Inicia el juego con el cliente 3.3.5a.
 3. Entra con un personaje nuevo de nivel 1 o escribe `/wpmodes` en el chat.
 
@@ -103,4 +103,4 @@ Este proyecto está licenciado bajo los términos de la **Licencia MIT**. Consul
 ## 📜 Créditos y Reconocimientos
 
 * **Diseño y Arquitectura:** [DarckRovert](https://github.com/DarckRovert)
-* **Comunidad y Servidor Destino:** [WoW Perú](https://wow-peru.lat/) - Reino Andino
+* **Comunidad y Servidor Destino:** [Project Jaina](https://worldofwanos.com/) - Project Jaina

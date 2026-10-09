@@ -1,4 +1,4 @@
-# 🛡️ Política de Seguridad - WoW Perú Game Modes
+# 🛡️ Política de Seguridad - Project Jaina Game Modes
 
 **Versión:** 1.0.0  
 **Fecha de Vigencia:** 27 de Septiembre de 2026  
@@ -8,11 +8,11 @@
 
 ## 1. Modelo de Seguridad
 
-**WoWPeru_GameModes** sigue el principio de **Autoridad Exclusiva del Servidor**:
+**Wanos_GameModes** sigue el principio de **Autoridad Exclusiva del Servidor**:
 
 - El cliente (`Core.lua`, `UI.lua`) actúa únicamente como **presentador de opciones y emisor de intención**.
 - La selección de modo **no es válida hasta que el servidor la confirme** mediante el paquete `ACK:<modo>`.
-- El guardado local en `WoWPeru_GameModes_CharDB.hasSelectedMode` es una optimización de UX para evitar mostrar el selector repetidamente, pero **no tiene valor de autoridad** sobre el estado real en la base de datos del servidor.
+- El guardado local en `Wanos_GameModes_CharDB.hasSelectedMode` es una optimización de UX para evitar mostrar el selector repetidamente, pero **no tiene valor de autoridad** sobre el estado real en la base de datos del servidor.
 
 ---
 
@@ -36,7 +36,7 @@
 
 ### 2.4. Validación Dual de Elegibilidad
 - El sistema verifica doble condición antes de abrir el selector:
-  1. `WoWPeru_GameModes_CharDB.hasSelectedMode == false` (bandera local).
+  1. `Wanos_GameModes_CharDB.hasSelectedMode == false` (bandera local).
   2. `CheckServerAuras()` escanea las auras activas en busca de `"hardcore"` o `"ironman"`, cubriendo el caso de que el jugador borre su carpeta `WTF/` (reseteo de SavedVariables) en una cabina de internet.
 
 ### 2.5. Integridad en el Ciclo de Vida de Personajes
@@ -58,9 +58,9 @@ Si descubres un fallo que permita:
 
 **NO abras un issue público en GitHub.** Contacta directamente:
 
-- **Discord:** Busca a `DarckRovert` en el servidor oficial de WoW Perú.
-- **In-game:** Personaje `Elnazzareno` en el Reino Andino.
-- **Servidor web:** [https://wow-peru.lat/](https://wow-peru.lat/)
+- **Discord:** Busca a `DarckRovert` en el servidor oficial de Project Jaina.
+- **In-game:** Personaje `Elnazzareno` en el Project Jaina.
+- **Servidor web:** [https://worldofwanos.com/](https://worldofwanos.com/)
 
 Proporciona:
 1. Pasos detallados para reproducir el comportamiento.

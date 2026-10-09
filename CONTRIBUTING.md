@@ -1,6 +1,6 @@
-# 🤝 Guía de Contribución - WoW Perú Game Modes
+# 🤝 Guía de Contribución - Project Jaina Game Modes
 
-¡Gracias por tu interés en contribuir a **WoWPeru_GameModes**! Este documento establece el flujo de trabajo, las pautas de calidad y los requisitos técnicos para que cualquier aporte sea aceptado en el proyecto oficial de WoW Perú.
+¡Gracias por tu interés en contribuir a **Wanos_GameModes**! Este documento establece el flujo de trabajo, las pautas de calidad y los requisitos técnicos para que cualquier aporte sea aceptado en el proyecto oficial de Project Jaina.
 
 ---
 

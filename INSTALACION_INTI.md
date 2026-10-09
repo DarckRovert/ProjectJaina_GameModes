@@ -1,11 +1,11 @@
-# WoWPeru_GameModes en Inti
+# Wanos_GameModes en Inti
 
 Instalación local para revisar la interfaz del repositorio, exclusiva del reino `Inti (Pruebas)`.
 
-- Origen: https://github.com/DarckRovert/WoWPeru_GameModes
+- Origen: https://github.com/DarckRovert/Wanos_GameModes
 - Revisión: `3dc0bcb18f22499161f3b021d088304652418124`
 - Cliente: WoW 3.3.5a, compilación 12340.
-- Carpeta: `C:\Users\vcarv\OneDrive\Desktop\WoW-Pe\Interface\AddOns\WoWPeru_GameModes`.
+- Carpeta: `C:\Users\vcarv\OneDrive\Desktop\WoW-Pe\Interface\AddOns\Wanos_GameModes`.
 
 ## Uso
 
@@ -50,7 +50,7 @@ Las cuatro texturas fueron verificadas byte a byte después de exportarlas a TGA
 
 El cliente estaba abierto durante la instalación; no se cerró por la fuerza. Cierra y vuelve a abrir WoW-Pe para cargar el TOC y las texturas nuevas. Después entra a Inti y usa `/modos` para comprobar el aspecto dentro del juego.
 
-El respaldo previo a este rediseño está en `C:\Users\vcarv\OneDrive\Desktop\PROYECTS\WOW PERU\workstreams\inti-gamemodes-20260927\parchment-design-v1\backup\WoWPeru_GameModes`. Con el cliente cerrado se puede restaurar ese respaldo sobre este addon; su TOC vuelve a cargar la interfaz anterior.
+El respaldo previo a este rediseño está documentado internamente en la bitácora de versiones de Modos de Juego. Con el cliente cerrado se puede restaurar ese respaldo sobre este addon; su TOC vuelve a cargar la interfaz anterior.
 
 ## Desinstalación
 

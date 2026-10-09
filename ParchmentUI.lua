@@ -1,7 +1,7 @@
 -- Inti parchment selector. Native WoW 3.3.5 frames, text and buttons.
 -- Generated artwork is decorative; realm/preview guards remain in Core.lua.
-local M = WoWPeru_GameModes
-local ART = "Interface\\AddOns\\WoWPeru_GameModes\\Textures\\"
+local M = ProjectJaina_GameModes
+local ART = "Interface\\AddOns\\Jaina_GameModes\\Textures\\"
 local FONT = "Fonts\\FRIZQT__.TTF"
 local WIDTH, HEIGHT = 1120, 656
 local CARD_W, CARD_H, GAP = 252, 504, 18
@@ -57,12 +57,12 @@ local function RedButton(parent, name, text, width, height)
 end
 
 local function HasSelection()
-    return not M.Config.PreviewOnly and WoWPeru_GameModes_CharDB and WoWPeru_GameModes_CharDB.hasSelectedMode
+    return not M.Config.PreviewOnly and ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode
 end
 
 local function RefreshCards()
     if not mainFrame then return end
-    local current = HasSelection() and WoWPeru_GameModes_CharDB.selectedMode
+    local current = HasSelection() and ProjectJaina_GameModes_CharDB.selectedMode
     for _, card in ipairs(mainFrame.container.cards) do
         if current then
             card.actionBtn:SetText(card.modeData.id == current and "SELECCIONADO" or "Elegir modo")
@@ -77,7 +77,7 @@ end
 
 local function CreateConfirmDialog()
     if confirmDialog then return confirmDialog end
-    local blocker = CreateFrame("Frame", "WoWPeru_ConfirmBlocker", UIParent)
+    local blocker = CreateFrame("Frame", "ProjectJaina_ConfirmBlocker", UIParent)
     blocker:SetAllPoints(UIParent)
     blocker:SetFrameStrata("FULLSCREEN_DIALOG")
     blocker:SetFrameLevel(120)
@@ -88,7 +88,7 @@ local function CreateConfirmDialog()
     scrim:SetTexture("Interface\\Buttons\\WHITE8X8")
     scrim:SetVertexColor(0, 0, 0, 0.8)
 
-    local dlg = CreateFrame("Frame", "WoWPeru_ConfirmDialog", blocker)
+    local dlg = CreateFrame("Frame", "ProjectJaina_ConfirmDialog", blocker)
     dlg:SetSize(530, 330)
     dlg:SetPoint("CENTER", blocker, "CENTER", 0, 0)
     dlg:EnableMouse(true)
@@ -96,7 +96,7 @@ local function CreateConfirmDialog()
     local dlgLogo = dlg:CreateTexture(nil, "ARTWORK")
     dlgLogo:SetSize(70, 35)
     dlgLogo:SetPoint("TOP", dlg, "TOP", 0, -10)
-    dlgLogo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    dlgLogo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
     dlg.logo = dlgLogo
 
     local title = Label(dlg, 21, {1, 0.79, 0.34})
@@ -106,7 +106,7 @@ local function CreateConfirmDialog()
     text:SetPoint("TOP", title, "BOTTOM", 0, -14)
     text:SetWidth(450)
     text:SetHeight(170)
-    local accept = RedButton(dlg, "WoWPeru_ConfirmAcceptBtn", "Probar selección", 210, 36)
+    local accept = RedButton(dlg, "ProjectJaina_ConfirmAcceptBtn", "Probar selección", 210, 36)
     accept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 42, 28)
     accept:SetScript("OnClick", function()
         local mode = pendingMode
@@ -114,14 +114,14 @@ local function CreateConfirmDialog()
         blocker:Hide()
         if mode then M:ApplyMode(mode.id) end
     end)
-    local cancel = RedButton(dlg, "WoWPeru_ConfirmCancelBtn", "Volver", 180, 36)
+    local cancel = RedButton(dlg, "ProjectJaina_ConfirmCancelBtn", "Volver", 180, 36)
     cancel:SetPoint("BOTTOMRIGHT", dlg, "BOTTOMRIGHT", -42, 28)
     cancel:SetScript("OnClick", function() pendingMode = nil; blocker:Hide() end)
     blocker:SetScript("OnHide", function() pendingMode = nil end)
     blocker:SetScript("OnSizeChanged", function() ScaleToScreen(dlg, 530, 330) end)
     dlg.title, dlg.text, dlg.btnAccept, dlg.btnCancel = title, text, accept, cancel
     blocker.dlg = dlg
-    table.insert(UISpecialFrames, "WoWPeru_ConfirmBlocker")
+    table.insert(UISpecialFrames, "ProjectJaina_ConfirmBlocker")
     confirmDialog = blocker
     return blocker
 end
@@ -145,7 +145,7 @@ local function SelectMode(mode)
 end
 
 local function CreateCard(parent, mode, index, count)
-    local card = CreateFrame("Button", "WoWPeru_Card_" .. mode.id, parent)
+    local card = CreateFrame("Button", "ProjectJaina_Card_" .. mode.id, parent)
     card:SetSize(CARD_W, CARD_H)
     local totalWidth = count * CARD_W + (count - 1) * GAP
     card:SetPoint("TOPLEFT", parent, "TOPLEFT", (WIDTH - totalWidth) / 2 + (index - 1) * (CARD_W + GAP), -110)
@@ -183,7 +183,7 @@ local function CreateCard(parent, mode, index, count)
     local button = RedButton(card, nil, "Probar selección", 190, 32)
     button:SetPoint("BOTTOM", card, "BOTTOM", 0, 37)
     local function Hover(hovered)
-        local isCurrent = HasSelection() and WoWPeru_GameModes_CharDB.selectedMode == mode.id
+        local isCurrent = HasSelection() and ProjectJaina_GameModes_CharDB.selectedMode == mode.id
         local bright = hovered or isCurrent
         art:SetVertexColor(bright and 1 or 0.93, bright and 1 or 0.93, bright and 1 or 0.93, 1)
         local color = mode.titleColor or {0.3, 0.2, 0.1}
@@ -203,7 +203,7 @@ end
 
 local function CreateMainUI()
     if mainFrame then return mainFrame end
-    local root = CreateFrame("Frame", "WoWPeru_GameModes_MainFrame", UIParent)
+    local root = CreateFrame("Frame", "ProjectJaina_GameModes_MainFrame", UIParent)
     root:SetAllPoints(UIParent)
     root:SetFrameStrata("FULLSCREEN_DIALOG")
     root:SetFrameLevel(80)
@@ -222,7 +222,7 @@ local function CreateMainUI()
     local logo = container:CreateTexture(nil, "ARTWORK")
     logo:SetSize(120, 60)
     logo:SetPoint("TOPLEFT", container, "TOPLEFT", 28, -14)
-    logo:SetTexture("Interface\\AddOns\\WoWPeru_GameModes\\Textures\\wowperu_logo.tga")
+    logo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
     container.logo = logo
 
     local brand = Label(container, 13, {0.78, 0.70, 0.47})
@@ -260,7 +260,7 @@ local function CreateMainUI()
         pendingMode = nil
     end)
     root:SetScript("OnSizeChanged", function() ScaleToScreen(container, WIDTH, HEIGHT) end)
-    table.insert(UISpecialFrames, "WoWPeru_GameModes_MainFrame")
+    table.insert(UISpecialFrames, "ProjectJaina_GameModes_MainFrame")
     mainFrame = root
     return root
 end
@@ -268,7 +268,7 @@ end
 function M:OpenSelectionUI()
     if not M:IsAllowedRealm() then return end
     if InCombatLockdown() then
-        DEFAULT_CHAT_FRAME:AddMessage("|cffffd36a[WoW Perú]|r El selector estará disponible al salir de combate.")
+        DEFAULT_CHAT_FRAME:AddMessage("|cffffd36a[Project Jaina]|r El selector estará disponible al salir de combate.")
         return
     end
     local ui = CreateMainUI()

@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: |cFFD4AF37Project Jaina|r - Modos de Juego
+## Notes: Selector cinematográfico de modos de juego (Normal, Hardcore, Ironman) para nuevos personajes en el Project Jaina.
+## Author: DarckRovert (Elnazzareno) & Project Jaina Team
+## Version: 1.0.0
+## SavedVariables: Wanos_GameModes_GlobalDB
+## SavedVariablesPerCharacter: Wanos_GameModes_CharDB
+
+Config.lua
+Locales.lua
+Core.lua
+UI.lua

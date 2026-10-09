@@ -1,8 +1,8 @@
-# 🤖 Reglas de Contexto y Memoria para Agentes de IA - WoWPeru_GameModes
+# 🤖 Reglas de Contexto y Memoria para Agentes de IA - Wanos_GameModes
 
-> **Repositorio Oficial:** [DarckRovert/WoWPeru_GameModes](https://github.com/DarckRovert/WoWPeru_GameModes)  
+> **Repositorio Oficial:** [DarckRovert/Wanos_GameModes](https://github.com/DarckRovert/Wanos_GameModes)  
 > **Líder del Proyecto:** DarckRovert (Ingame: `Elnazzareno`)  
-> **Servidor Destino:** [WoW Perú](https://wow-peru.lat/) - Reino Andino  
+> **Servidor Destino:** [Project Jaina](https://worldofwanos.com/) - Project Jaina  
 > **Entorno:** WotLK 3.3.5a (Build 12340) | Motor Eluna Lua Engine  
 
 ---
@@ -23,7 +23,7 @@
    - Canal de despacho: `GUILD` → `RAID` → `PARTY` → `SAY` (orden de fallback dinámico).
 
 4. **Inmutabilidad de la Selección:**
-   - `WoWPeru_GameModes_CharDB.hasSelectedMode = true` es el candado local de la selección.
+   - `Wanos_GameModes_CharDB.hasSelectedMode = true` es el candado local de la selección.
    - Solo el servidor (vía paquete `ACK:<modo>`) puede confirmar la selección de forma persistente.
    - Modificar el candado local solo con `Config.Debug = true` y únicamente para pruebas de QA.
 
