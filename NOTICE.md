@@ -1,23 +1,28 @@
 # 📜 Aviso Legal y Atribución — ProjectJaina_GameModes
 
-Este repositorio forma parte del ecosistema oficial de **Project Jaina - Project Jaina**.
-Contiene el selector cinematográfico de modos de juego (Normal, Hardcore, Ironman, Reto Andino) para World of Warcraft 3.3.5a (Build 12340).
+Este repositorio forma parte del ecosistema oficial de **Project Jaina**.
+Contiene Selector cinematográfico nativo de modalidades de juego al iniciar sesión en Nivel 1 (Aventurero, Hardcore 1-Vida, Ironman, Reto Andino x1) con doble confirmación modal irreversible. para el cliente World of Warcraft 3.3.5a (Build 12340).
 
 ---
 
 ## 1. Autoría y Desarrollo Oficial
 * **Desarrollador Principal:** DarckRovert (Ingame: `Elnazzareno`) & Antigravity (Mythos 5)
-* **Ecosistema:** [Project Jaina — Project Jaina](https://darckrovert.github.io/ProjectJaina_Web/)
+* **Ecosistema:** [Project Jaina Oficial](https://darckrovert.github.io/ProjectJaina_Web/)
 * **Repositorio Oficial:** [DarckRovert/ProjectJaina_GameModes](https://github.com/DarckRovert/ProjectJaina_GameModes)
 
 ---
 
-## 2. Arquitectura Cliente-Servidor
-* **Prefijo de Red:** `WP_GAMEMODE` (Canales: `GUILD`, `PARTY`, `RAID`).
-* **Backend Autoritativo:** Script Eluna `71_GameModesSystem.lua` y tabla MySQL `character_gamemodes`.
-* **Seguridad de Reglas:** La asignación de reglas de permadeath (Hardcore) y restricciones de equipo (Ironman) son fiscalizadas en el servidor. La interfaz del cliente proporciona una experiencia cinematográfica inmersiva para la selección inicial.
+## 2. Arquitectura y Protocolo Autoritativo
+* **Prefijo de Red:** `WP_GAMEMODE`
+* **Integración Servidor:** `80_GameModesSystem.lua y tabla MySQL character_game_modes`
+* **Variables Guardadas:** `ProjectJaina_GameModesDB`
+* **Comandos Slash:** `/gamemode, /modos`
 
 ---
 
-## 3. Cumplimiento de Políticas de Interfaz
-Distribuido bajo licencia MIT sin fines de lucro, conforme a las directivas de desarrollo de interfaces de Blizzard Entertainment.
+## 3. Cumplimiento de Políticas de Interfaz (Blizzard Custom UI Policy)
+En estricto cumplimiento de la Política de Interfaz de Usuario Personalizada de Blizzard Entertainment (2009):
+1. **Gratuito y Abierto:** Este software es completamente gratuito y de código abierto para la comunidad de jugadores.
+2. **Sin Alteración de Binarios:** No realiza ingeniería inversa, inyección de código ni altera binarios del juego (`WoW.exe`).
+3. **Aislamiento FrameXML:** Respeta el aislamiento de ejecución en FrameXML y no genera taint en subsistemas protegidos de combate.
+4. **Sin Publicidad ni Cobro:** No incluye anuncios publicitarios ni solicita compensación monetaria directa para el uso de sus funciones in-game.

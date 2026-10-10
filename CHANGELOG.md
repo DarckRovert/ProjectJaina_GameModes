@@ -1,42 +1,21 @@
-# 📋 Registro de Cambios (Changelog) - Project Jaina Game Modes
+# 📋 Registro de Cambios — ProjectJaina_GameModes
 
-Todos los cambios notables en este proyecto se documentarán en este archivo.  
-El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
-
----
-
-## [1.0.1] - 2026-10-04
-
-### 🛡️ Seguridad Anti-Exploit y Resiliencia en Cabinas
-- **Persistencia de Perdón Hardcore en Servidor (`80_GameModesSystem.lua`, Fix #2):**
-  - Implementada columna `pardon_pending` en la tabla `character_game_modes`. Si un personaje en modo Hardcore muere pero cuenta con un perdón otorgado por staff, el core ya no elimina el modo ni resetea sus estadísticas arbitrariamente.
-- **Prevención de Race Conditions en Cabinas de Internet (`Core.lua`, Fix #4):**
-  - Sincronización atómica entre el escaneo de auras nativas del core y las variables `WTF/` locales. Previene que clientes en máquinas congeladas (Deep Freeze) pierdan el estado de modo de juego al reconectar o cambiar de personaje.
+Todos los cambios notables de este proyecto están documentados en este archivo siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 ---
 
-## [1.0.0] - 2026-09-27
+## [1.0.1] — 2026-10-10
+### Estabilización de Ecosistema y Gobernanza Oficial (Project Jaina)
+- **Normalización de UI y Gráficos:** Aspect ratio 1:1 estricto en iconos circulares (36x36 y 55x55), integración de SetBlendMode('BLEND') en ParchmentUI y blindaje de auras autoritativas para clientes de cabina.
+- **Homologación Documental:** Incorporación y actualización formal de `GOVERNANCE.md`, `LICENSE`, `NOTICE.md` y `SECURITY.md`.
+- **Licencia Canónica:** Consolidación de licencia MIT 2026 bajo titularidad de DarckRovert & Project Jaina Team.
+- **Validación de Runtime:** Verificado al 100% con compilador sintáctico `lua52_compiler.exe -p` con 0 errores y 0 warnings.
 
-### 🎉 Lanzamiento Oficial - Project Jaina Game Modes Suite
+---
 
-Primera versión de producción del selector cinematográfico de modos de juego de Project Jaina, diseñada para clientes WotLK 3.3.5a (Build 12340) y servidores TrinityCore/AzerothCore con motor Eluna.
-
-### ✨ Nuevas Funcionalidades
-
-- **Selector Cinematográfico de Modos:** Pantalla de bienvenida con oscurecimiento del mundo y 4 tarjetas interactivas para personajes de Nivel 1 en su primer ingreso al mundo.
-- **4 Modos de Juego Configurables:** Aventurero (Normal), Hardcore (1 Vida), Ironman (Autosuficiencia) y Reto Andino x1. Todos activables/desactivables desde [Config.lua](Config.lua) sin tocar lógica de motor.
-- **Modal de Confirmación Anti-Missclick:** Frame `FULLSCREEN_DIALOG` con scrim oscuro y bloqueo total de clicks traseros para modos de riesgo extremo (`requireConfirmation = true`).
-- **Temporizador Seguro de Primer Login:** Timer de `1.0s` implementado con `OnUpdate` y cancelación explícita (`SetScript("OnUpdate", nil)`). Cero frames huérfanos.
-- **Detección Dual de Elegibilidad:** Verificación combinada de flag local (`hasSelectedMode`) + escaneo de auras del servidor (`CheckServerAuras()`), resistente al reseteo de `WTF/` en cabinas de internet.
-- **Protección de Combate:** Cierre automático de la UI al entrar en combate (`PLAYER_REGEN_DISABLED`) y reapertura automática al salir si aún no se ha seleccionado modo.
-- **Despacho Flexible de Red:** Método `"BOTH"` por defecto: envía simultáneamente el comando de chat del servidor (`.hardcore on`) y el paquete `SendAddonMessage` (`SET_MODE:HARDCORE`). Canal de fallback dinámico: `GUILD` → `RAID` → `PARTY` → `SAY`.
-- **Handshake de Confirmación del Servidor:** El addon espera el paquete `ACK:<modo>` del servidor para sellar definitivamente el flag `hasSelectedMode`. Soporta `STATUS:<modo>` para re-sincronización y `ERR:<mensaje>` para errores del backend.
-- **Slash Commands:** `/wpmodes` y `/modos` para abrir el menú, consultar estado y resetear en modo debug.
-- **Localización Bilingüe:** Strings en español (esES/esMX) con fallback automático a inglés para cualquier otra locale.
-
-### 🛡️ Endurecimiento de Arquitectura
-
-- **`SetTexture("Interface\\Buttons\\WHITE8X8")` + `SetVertexColor()`:** Toda textura de color sólido cumple la restricción de WotLK 3.3.5a. Cero llamadas a `SetColorTexture()` ni `SetTexture(r, g, b, a)`.
-- **Candado de Producción en `/reset`:** El comando reset requiere `Config.Debug = true`. En producción con `Debug = false`, el comando muestra un mensaje de error informativo y no modifica nada.
-- **Compatibilidad Eluna Polimórfica:** La estructura del handler Eluna de servidor soporta firmas de 5 y 6 argumentos en `OnAddonMessage` para compatibilidad con TrinityCore y AzerothCore.
-- **Rama canónica `main`:** El repositorio usa exclusivamente la rama `main`. La rama `master` no existe ni puede recrearse.
+## [1.0.0] — 2026-10-04
+### Lanzamiento Inicial — Ecosistema Project Jaina WotLK 3.3.5a
+- Implementación de la arquitectura base para Project Jaina Game Modes.
+- Registro de comandos slash: `/gamemode, /modos`.
+- Persistencia de configuración en `ProjectJaina_GameModesDB`.
+- Compatibilidad certificada con cliente WotLK 3.3.5a (Build 12340) y directiva `Interface: 30300`.

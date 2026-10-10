@@ -1,68 +1,35 @@
-# 🛡️ Política de Seguridad - Project Jaina Game Modes
+# 🛡️ Política de Seguridad — ProjectJaina_GameModes
 
-**Versión:** 1.0.0  
-**Fecha de Vigencia:** 27 de Septiembre de 2026  
-**Responsable de Seguridad:** DarckRovert (Elnazzareno)  
-
----
-
-## 1. Modelo de Seguridad
-
-**ProjectJaina_GameModes** sigue el principio de **Autoridad Exclusiva del Servidor**:
-
-- El cliente (`Core.lua`, `UI.lua`) actúa únicamente como **presentador de opciones y emisor de intención**.
-- La selección de modo **no es válida hasta que el servidor la confirme** mediante el paquete `ACK:<modo>`.
-- El guardado local en `ProjectJaina_GameModes_CharDB.hasSelectedMode` es una optimización de UX para evitar mostrar el selector repetidamente, pero **no tiene valor de autoridad** sobre el estado real en la base de datos del servidor.
+**Proyecto:** Project Jaina  
+**Estándar de Seguridad:** Staff Software Engineer L9 (Mythos 5)  
+**Fecha de Actualización:** 10 de Octubre de 2026  
 
 ---
 
-## 2. Mecanismos de Defensa Implementados
+## 1. Alcance y Filosofía de Seguridad
 
-### 2.1. Candado Local de Inmutabilidad
-- Una vez que el jugador selecciona un modo y el servidor responde con `ACK:`, el flag `hasSelectedMode = true` se fija localmente.
-- El sistema rechaza cualquier intento adicional de selección con un mensaje de error informativo y cierra la UI.
-- El único mecanismo de reset local es `/wpmodes reset` con `Config.Debug = true`, protegido por un guard condicional explícito en `Core.lua`.
-
-### 2.2. Modal de Confirmación Anti-Missclick
-- Los modos de riesgo extremo (`requireConfirmation = true`) activan un diálogo de confirmación con:
-  - Un frame `FULLSCREEN_DIALOG` que bloquea todos los clicks de las tarjetas de fondo (`EnableMouse(true)`).
-  - Un scrim oscuro semitransparente que visualmente desmarca la UI principal.
-  - Dos botones explícitos: confirmación y cancelación.
-- Esto hace matemáticamente imposible la activación accidental de Hardcore o Ironman.
-
-### 2.3. Protección de Combate
-- Si el personaje entra en combate (`PLAYER_REGEN_DISABLED`) mientras el selector está abierto, la UI se cierra automáticamente con un mensaje de advertencia.
-- La UI se reabre automáticamente al salir del combate si el personaje aún no ha seleccionado su modo.
-
-### 2.4. Validación Dual de Elegibilidad
-- El sistema verifica doble condición antes de abrir el selector:
-  1. `ProjectJaina_GameModes_CharDB.hasSelectedMode == false` (bandera local).
-  2. `CheckServerAuras()` escanea las auras activas en busca de `"hardcore"` o `"ironman"`, cubriendo el caso de que el jugador borre su carpeta `WTF/` (reseteo de SavedVariables) en una cabina de internet.
-
-### 2.5. Integridad en el Ciclo de Vida de Personajes
-- El script de servidor `71_GameModesSystem.lua` debe escuchar `PLAYER_EVENT_ON_CHARACTER_DELETE` (Evento 2 de Eluna) para purgar la fila del personaje en `character_gamemodes`.
-- Esto previene que un nuevo personaje creado con el mismo LowGUID herede un modo de juego activo del personaje eliminado.
-
-### 2.6. Sanitización de Comandos de Servidor
-- Los comandos enviados al servidor (`.hardcore on`, `.desafio`, etc.) son strings estáticos definidos en `Config.lua`. No se interpola ningún input del usuario en ellos.
-- No existe superficie de ataque de inyección de comandos en la versión actual.
+La seguridad de **ProjectJaina_GameModes** se fundamenta en el aislamiento estricto del entorno de ejecución de Lua 5.1 dentro del cliente World of Warcraft 3.3.5a (Build 12340) y en la validación autoritativa en el servidor.
 
 ---
 
-## 3. Notificación Responsable de Vulnerabilidades
+## 2. Principios de Blindaje de Código
 
-Si descubres un fallo que permita:
-- Evadir la selección de modo sin restricciones del servidor.
-- Duplicar o falsificar paquetes `ACK:`.
-- Manipular `hasSelectedMode` sin autorización del servidor.
+1. **Aislamiento de FrameXML y Anti-Taint:**
+   - Las funciones que interactúan con botones de acción protegidos o macros de combate no contaminan las variables de entorno global seguras.
+   - Se evita estrictamente la modificación de tablas globales del sistema sin nombres de espacio propios (`PJ_*` o nombres de addon).
+2. **Límite de Red y Prevención de Desbordamiento:**
+   - La API `SendAddonMessage` está restringida a un máximo absoluto de **255 bytes por paquete**. Todo payload emitido se fragmenta o comprime en estructuras compactas.
+   - Prefijo auditado: `WP_GAMEMODE`.
+3. **Validación Autoritativa en Servidor:**
+   - El cliente de interfaz es tratado como un medio de presentación potencialmente no confiable. Ninguna transacción de ítems, progreso, monedas o recompensas es decidida por el cliente; el servidor Eluna / C++ (`80_GameModesSystem.lua y tabla MySQL character_game_modes`) valida y aplica los cambios en MySQL.
+4. **Higiene de Strings y Sanitización:**
+   - Toda entrada de usuario proveniente de cajas de texto (`EditBox`) o comandos slash (`/gamemode, /modos`) es limpiada contra inyecciones de secuencias de escape y caracteres nulos.
 
-**NO abras un issue público en GitHub.** Contacta directamente:
+---
 
-- **Discord:** Busca a `DarckRovert` en el servidor oficial de Project Jaina.
-- **In-game:** Personaje `Elnazzareno` en el Project Jaina.
-- **Servidor web:** [https://darckrovert.github.io/ProjectJaina_Web/](https://darckrovert.github.io/ProjectJaina_Web/)
+## 3. Reporte Responsable de Vulnerabilidades
 
-Proporciona:
-1. Pasos detallados para reproducir el comportamiento.
-2. Captura de pantalla o log de errores de Eluna/consola del emulador.
-3. Impacto estimado sobre la integridad del servidor.
+Si descubres una vulnerabilidad de seguridad o un vector de explotación en este AddOn:
+- **No lo divulgues públicamente.**
+- Notifícalo de inmediato a través del canal privado de ingeniería en el portal oficial: [Project Jaina Contacto](https://darckrovert.github.io/ProjectJaina_Web/).
+- El equipo técnico investigará y aplicará el parche correctivo de forma expedita.

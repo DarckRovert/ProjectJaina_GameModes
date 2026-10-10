@@ -1,7 +1,7 @@
 -- Inti parchment selector. Native WoW 3.3.5 frames, text and buttons.
 -- Generated artwork is decorative; realm/preview guards remain in Core.lua.
 local M = ProjectJaina_GameModes
-local ART = "Interface\\AddOns\\Jaina_GameModes\\Textures\\"
+local ART = "Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\"
 local FONT = "Fonts\\FRIZQT__.TTF"
 local WIDTH, HEIGHT = 1120, 656
 local CARD_W, CARD_H, GAP = 252, 504, 18
@@ -94,9 +94,10 @@ local function CreateConfirmDialog()
     dlg:EnableMouse(true)
     DarkBackdrop(dlg, {0.68, 0.47, 0.19, 1})
     local dlgLogo = dlg:CreateTexture(nil, "ARTWORK")
-    dlgLogo:SetSize(70, 35)
+    dlgLogo:SetSize(38, 38)
     dlgLogo:SetPoint("TOP", dlg, "TOP", 0, -10)
-    dlgLogo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
+    dlgLogo:SetTexture("Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\jaina_logo.tga")
+    dlgLogo:SetBlendMode("BLEND")
     dlg.logo = dlgLogo
 
     local title = Label(dlg, 21, {1, 0.79, 0.34})
@@ -220,9 +221,10 @@ local function CreateMainUI()
     root.container = container
 
     local logo = container:CreateTexture(nil, "ARTWORK")
-    logo:SetSize(120, 60)
+    logo:SetSize(60, 60)
     logo:SetPoint("TOPLEFT", container, "TOPLEFT", 28, -14)
-    logo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
+    logo:SetTexture("Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\jaina_logo.tga")
+    logo:SetBlendMode("BLEND")
     container.logo = logo
 
     local brand = Label(container, 13, {0.78, 0.70, 0.47})

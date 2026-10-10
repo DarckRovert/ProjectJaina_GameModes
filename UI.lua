@@ -74,11 +74,12 @@ local function CreateConfirmDialog()
         insets = { left = 9, right = 9, top = 9, bottom = 9 }
     })
 
-    -- Logo Oficial de Project Jaina
+    -- Logo Oficial de Project Jaina (Ratio 1:1 circular)
     local dlgLogo = dlg:CreateTexture(nil, "ARTWORK")
-    dlgLogo:SetSize(60, 30)
+    dlgLogo:SetSize(36, 36)
     dlgLogo:SetPoint("TOP", dlg, "TOP", 0, -8)
-    dlgLogo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
+    dlgLogo:SetTexture("Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\jaina_logo.tga")
+    dlgLogo:SetBlendMode("BLEND")
     dlg.logo = dlgLogo
 
     -- Título de Advertencia
@@ -357,11 +358,12 @@ local function CreateMainUI()
     root.container = container
     UpdateContainerScale(container)
 
-    -- Logo Oficial de Project Jaina
+    -- Logo Oficial de Project Jaina (Ratio 1:1 circular)
     local logo = container:CreateTexture(nil, "ARTWORK")
-    logo:SetSize(110, 55)
+    logo:SetSize(55, 55)
     logo:SetPoint("TOPLEFT", container, "TOPLEFT", 20, -12)
-    logo:SetTexture("Interface\\AddOns\\Jaina_GameModes\\Textures\\jaina_logo.tga")
+    logo:SetTexture("Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\jaina_logo.tga")
+    logo:SetBlendMode("BLEND")
     container.logo = logo
 
     -- Encabezado: Servidor y Reino
