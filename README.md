@@ -45,7 +45,7 @@ El jugador no necesita descargar ningún addon externo de internet si el staff d
 3. **Modal de Confirmación Anti-Missclick**:
    * Los modos de riesgo extremo requieren una doble confirmación explícita con un diálogo de seguridad.
 4. **Arquitectura Desacoplada (Cliente ➔ Servidor)**:
-   * Compatible de fábrica con comandos de consola estándar de AzerothCore/TrinityCore (ej: `.hardcore on`, `.desafio`).
+   * Compatible de fábrica con comandos de consola estándar de JainaCore/TrinityCore (ej: `.hardcore on`, `.desafio`).
    * Soporta comunicación por mensajes de addon (`SendAddonMessage`) para scripts C++ o Eluna.
 5. **Configuración Amigable para el Staff**:
    * Archivo `Config.lua` limpio y comentado para activar, desactivar o modificar cualquier modo en segundos sin tocar código complejo.

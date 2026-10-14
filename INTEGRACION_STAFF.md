@@ -1,6 +1,6 @@
 # 📘 Guía de Integración Técnica para el Staff de Project Jaina
 
-Este documento está dirigido al **administrador o desarrollador de backend/core de Project Jaina**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (AzerothCore o TrinityCore).
+Este documento está dirigido al **administrador o desarrollador de backend/core de Project Jaina**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (JainaCore o TrinityCore).
 
 ---
 
@@ -50,7 +50,7 @@ Abre `Config.lua` y localiza la tabla `M.Config.Modes`:
 }
 ```
 
-* Si tu servidor usa **AzerothCore con `mod-hardcore`**, el comando por defecto suele ser:
+* Si tu servidor usa **JainaCore con `mod-hardcore`**, el comando por defecto suele ser:
   ```lua
   command = ".hardcore on"
   ```
@@ -122,7 +122,7 @@ RegisterPlayerEvent(42, OnPlayerCommand)
 
 Si el equipo de Project Jaina aún no ha implementado la lógica de muerte permanente en el emulador, la recomendación de ingeniería estándar es utilizar el módulo oficial de la comunidad:
 
-* **Módulo Oficial AzerothCore:** [`azerothcore/mod-hardcore`](https://github.com/azerothcore/mod-hardcore)
+* **Módulo Oficial JainaCore:** [`jainacore/mod-hardcore`](https://github.com/jainacore/mod-hardcore)
 * **Funcionalidades que incluye:**
   * Bloqueo de resurrección al morir.
   * Anuncio global en el reino cuando un jugador Hardcore muere.

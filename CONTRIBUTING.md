@@ -46,7 +46,7 @@ El selector de modos de juego opera en el cliente WoW 3.3.5a (Build 12340). Todo
 3. **Mensajes de Commit:** Seguir la convención de Commits Convencionales:
    - `fix: cancelar timer OnUpdate en CreateConfirmDialog`
    - `feat: agregar modo Reto Andino x1 con recompensas al nivel 60`
-   - `docs: actualizar guia de integracion para AzerothCore 3.x`
+   - `docs: actualizar guia de integracion para JainaCore 3.x`
    - `perf: evitar CreateFrame dinamico en cards de modo`
 
 ---
