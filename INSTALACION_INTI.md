@@ -5,11 +5,11 @@ Instalación local para revisar la interfaz del repositorio, exclusiva del reino
 - Origen: https://github.com/DarckRovert/ProjectJaina_GameModes
 - Revisión: `3dc0bcb18f22499161f3b021d088304652418124`
 - Cliente: WoW 3.3.5a, compilación 12340.
-- Carpeta: `C:\Users\vcarv\OneDrive\Desktop\WoW-Pe\Interface\AddOns\ProjectJaina_GameModes`.
+- Carpeta: `Client\Interface\AddOns\ProjectJaina_GameModes`.
 
 ## Uso
 
-Cierra completamente el cliente si estaba abierto y vuelve a abrirlo. En la selección de personajes, comprueba que el addon esté habilitado. Entra a Inti y escribe `/modos` o `/wpmodes`. Un personaje nuevo también recibe la bienvenida automáticamente. Escape o la X cierran el menú.
+Cierra completamente el cliente si estaba abierto y vuelve a abrirlo. En la selección de personajes, comprueba que el addon esté habilitado. Entra a Inti y escribe `/modos` o `/jainamodes`. Un personaje nuevo también recibe la bienvenida automáticamente. Escape o la X cierran el menú.
 
 Esta instalación está en **vista previa**. Presenta cuatro pergaminos ilustrados y una confirmación adicional para Hardcore e Ironman, pero no envía comandos, no activa modos, no cambia personajes y no guarda una activación ficticia. Los textos de características de las tarjetas son una propuesta visual; no describen necesariamente las reglas actuales de Inti.
 
@@ -17,7 +17,7 @@ No se ejecuta fuera de `Inti (Pruebas)`. No se han modificado MPQ, configuració
 
 ## Revisión de compatibilidad
 
-El repositorio solo incluye el addon cliente y una guía de integración. Sus comandos `.hardcore on`, `.desafio ironman`, `.desafio x1` y `.wp_gamemode` no tienen manejadores en las fuentes y scripts de Inti revisados.
+El repositorio solo incluye el addon cliente y una guía de integración. Sus comandos `.hardcore on`, `.desafio ironman`, `.desafio x1` y `.jaina_gamemode` no tienen manejadores en las fuentes y scripts de Inti revisados.
 
 Inti utiliza `mod-challenge-modes`: Hardcore y Semihardcore se activan mediante su altar, requieren nivel 2 exacto y el servidor valida historial y elegibilidad. IronMan y SlowXpGain están desactivados en la configuración revisada. Hardcore usa un multiplicador de experiencia propio. No se deben sustituir estas reglas por los ejemplos de la guía del addon.
 
@@ -48,7 +48,7 @@ Los archivos `README.md` e `INTEGRACION_STAFF.md` se conservan como documentaci�
 
 Las cuatro texturas fueron verificadas byte a byte después de exportarlas a TGA, incluyendo alfa y orientación. La composición visual se revisó a 1280 × 760 y 800 × 600 fuera del juego. Esta composición utiliza fuentes y controles aproximados; no sustituye una prueba del renderizado en el cliente real.
 
-El cliente estaba abierto durante la instalación; no se cerró por la fuerza. Cierra y vuelve a abrir WoW-Pe para cargar el TOC y las texturas nuevas. Después entra a Inti y usa `/modos` para comprobar el aspecto dentro del juego.
+El cliente estaba abierto durante la instalación; no se cerró por la fuerza. Cierra y vuelve a abrir Project Jaina para cargar el TOC y las texturas nuevas. Después entra a Inti y usa `/modos` para comprobar el aspecto dentro del juego.
 
 El respaldo previo a este rediseño está documentado internamente en la bitácora de versiones de Modos de Juego. Con el cliente cerrado se puede restaurar ese respaldo sobre este addon; su TOC vuelve a cargar la interfaz anterior.
 
