@@ -4,6 +4,24 @@ Todos los cambios notables de este proyecto están documentados en este archivo 
 
 ---
 
+## [1.2.0] — 2026-10-23
+### Modo Die & Rise (3 Vidas con Degradación Necrótica) y Arquitectura 5-Tarjetas
+- **Nuevo Modo Die & Rise:** Incorporación del 5º modo de juego oficial basado en la propuesta comunitaria (TuWoW). Permite 3 vidas con degradación visual y de auras:
+  - **Vida 3:** Normal.
+  - **Vida 2:** Resurrección con carne fría / halo sombrío (Aura 48266).
+  - **Vida 1:** Nigromancia terminal, metamorfosis a esqueleto de la plaga (Visual 14782).
+  - **Vida 0:** Muerte definitiva irreversible y tumba conmemorativa.
+- **Arte Visual Dedicado:** Creada e integrada la textura maestra `dierise.tga` (512x1024 RGBA) con estética espectral/nigromántica.
+- **Rediseño Responsive de UI:**
+  - `BASE_WIDTH` adaptado dinámicamente a 1180px para alojar 5 tarjetas sin solapamientos.
+  - Ancho de tarjetas ajustado a 218px con espaciado de 12px (`cardGap = 12`).
+  - Margen superior y tipografías recalibradas para visualización cristalina en todas las resoluciones.
+- **Sincronización de Protocolo de Red:**
+  - Soporte de payload de estado enriquecido `STATUS:mode:lives:max_lives`.
+  - Despacho de comando `SET_MODE:DIE_AND_RISE`.
+
+---
+
 ## [1.1.0] — 2026-10-22
 ### Rediseño Cinematográfico AAA y Soberanía de Red (Project Jaina Soberano)
 - **Rediseño Visual AAA:** Tarjetas de pergamino verticales en proporción áurea (252x504 px) con renderizado a pantalla completa de las 4 ilustraciones maestras (512x1024 RGBA) para *Aventurero*, *Hardcore*, *Ironman* y *Reto Andino x1*.

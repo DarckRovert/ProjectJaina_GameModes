@@ -63,6 +63,12 @@ local function CheckServerAuras()
                 ProjectJaina_GameModes_CharDB.selectedMode = "IRONMAN"
             end
             return true
+        elseif string.find(lowerName, "die and rise") or string.find(lowerName, "dierise") then
+            if ProjectJaina_GameModes_CharDB then
+                ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                ProjectJaina_GameModes_CharDB.selectedMode = "DIE_AND_RISE"
+            end
+            return true
         end
     end
     return false
@@ -189,11 +195,19 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                 end
             -- 2. Reporte de estado desde el servidor (re-sincronización)
             elseif string.find(message, "^STATUS:") then
-                local serverMode = string.sub(message, 8)
+                local payload = string.sub(message, 8)
+                local parts = {}
+                for p in string.gmatch(payload, "[^:]+") do table.insert(parts, p) end
+                local serverMode = parts[1] or "NONE"
+                local lives = tonumber(parts[2]) or 1
+                local maxLives = tonumber(parts[3]) or 1
+
                 if serverMode ~= "NONE" then
                     if ProjectJaina_GameModes_CharDB then
                         ProjectJaina_GameModes_CharDB.hasSelectedMode = true
                         ProjectJaina_GameModes_CharDB.selectedMode = serverMode
+                        ProjectJaina_GameModes_CharDB.lives = lives
+                        ProjectJaina_GameModes_CharDB.maxLives = maxLives
                     end
                     -- Si el menú de selección estaba en pantalla, cerrarlo de inmediato
                     if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then

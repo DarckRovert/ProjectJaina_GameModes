@@ -62,6 +62,30 @@ M.Config = {
             requireConfirmation = false,
         },
         {
+            id = "DIE_AND_RISE",
+            enabled = true,
+            title = "Die & Rise",
+            badge = "|TInterface\\Icons\\Spell_DeathKnight_ArmyOfTheDead:12:12:0:0|t 3 VIDAS",
+            badgeColor = {0.75, 0.35, 0.95}, -- Púrpura Nigromántico
+            accentColor = {0.85, 0.45, 1.0},
+            titleColor = {0.35, 0.12, 0.48}, -- Púrpura profundo sobre pergamino
+            artTexture = "dierise.tga",
+            icon = "Interface\\Icons\\Spell_DeathKnight_ArmyOfTheDead",
+            tagline = "Tres vidas antes de la muerte permanente",
+            description = "Un desafío con segundas oportunidades: dispones de 3 vidas. Cada muerte degrada tu cuerpo físicamente. Derrotar jefes de raid o llegar al nivel 80 purifica tu carne con la Luz.",
+            perks = {
+                "3 vidas antes de la muerte permanente",
+                "Metamorfosis necrótica visible tras cada caída",
+                "Purificación total de vidas al nivel 80",
+                "Derrotar bosses de raid restaura +1 vida",
+            },
+            command = ".desafio dierise",
+            addonPayload = "SET_MODE:DIE_AND_RISE",
+            requireConfirmation = true,
+            confirmTitle = "CONFIRMAR MODO DIE & RISE",
+            confirmWarning = "El Modo Die & Rise te concede 3 vidas con putrefacción física progresiva.\n\nAl perder tu tercera vida, tu personaje MORIRÁ PARA SIEMPRE.\n\n¿Aceptas el desafío de los tres estertores?",
+        },
+        {
             id = "HARDCORE",
             enabled = true,
             title = "Hardcore",

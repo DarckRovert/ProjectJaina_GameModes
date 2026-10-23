@@ -20,14 +20,14 @@ En World of Warcraft 3.3.5a nativo no existe un selector de modos de juego en la
 El jugador no necesita descargar ningún addon externo de internet si el staff del servidor empaqueta este módulo dentro de su parche oficial `patch-Z-Project Jaina.MPQ` o en el cliente de distribución.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        ELIGE TU DESTINO EN AZEROTH                     │
-├─────────────────┬──────────────────┬──────────────────┬────────────────┤
-│ 🗡️ AVENTURERO   │ 💀 HARDCORE      │ 🛡️ IRONMAN       │ 🗺️ RETO X1     │
-│ Modo Estándar   │ 1 Sola Vida      │ Autosuficiencia  │ Progresión     │
-│ Reglas clásicas │ Muerte definitiva│ Sin comercio     │ Blizzlike pura │
-│ Comercio libre  │ Recompensas 80   │ Sin subastas     │ Vanilla 1 a 60 │
-└─────────────────┴──────────────────┴──────────────────┴────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              ELIGE TU DESTINO EN AZEROTH                               │
+├─────────────────┬──────────────────┬──────────────────┬────────────────┬───────────────┤
+│ 🗡️ AVENTURERO   │ 💀 HARDCORE      │ 🛡️ IRONMAN       │ 🗺️ RETO X1     │ ⚰️ DIE & RISE  │
+│ Modo Estándar   │ 1 Sola Vida      │ Autosuficiencia  │ Progresión     │ 3 Vidas       │
+│ Reglas clásicas │ Muerte definitiva│ Sin comercio     │ Blizzlike pura │ Metamorfosis  │
+│ Comercio libre  │ Recompensas 80   │ Sin subastas     │ Vanilla 1 a 60 │ Necrótica     │
+└─────────────────┴──────────────────┴──────────────────┴────────────────┴───────────────┘
 ```
 
 ---
@@ -37,11 +37,12 @@ El jugador no necesita descargar ningún addon externo de internet si el staff d
 1. **Apertura Cinematográfica Automática**:
    * Detecta automáticamente personajes recién creados (`Nivel == 1` y `XP == 0`).
    * Oscurece la pantalla de juego con un efecto de viñeta inmersivo que centra la atención del usuario en su decisión.
-2. **Catálogo de 4 Modos Configurables**:
+2. **Catálogo de 5 Modos Configurables**:
    * **Modo Aventurero (Normal):** Experiencia Blizzlike clásica sin restricciones.
    * **Modo Hardcore (1 Vida):** Muerte permanente con advertencia de confirmación irreversible.
    * **Modo Ironman:** Desafío solitario sin comercio, correo ni subastas.
    * **Reto Andino x1:** Ritmo de experiencia pausado para la fase de progresión.
+   * **Modo Die & Rise (3 Vidas):** Desafío necrótico con 3 vidas, degradación visual progresiva (forma esquelética en última vida) y purificación de almas al nivel 80 o jefes de banda.
 3. **Modal de Confirmación Anti-Missclick**:
    * Los modos de riesgo extremo requieren una doble confirmación explícita con un diálogo de seguridad.
 4. **Arquitectura Desacoplada (Cliente ➔ Servidor)**:

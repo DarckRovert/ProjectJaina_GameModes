@@ -12,8 +12,8 @@ ProjectJaina_GameModes = ProjectJaina_GameModes or {}
 local M = ProjectJaina_GameModes
 
 local TEXTURE_PATH = "Interface\\AddOns\\ProjectJaina_GameModes\\Textures\\"
-local BASE_WIDTH, BASE_HEIGHT = 1120, 650
-local CARD_W, CARD_H, CARD_GAP = 252, 504, 18
+local BASE_WIDTH, BASE_HEIGHT = 1180, 650
+local CARD_W, CARD_H, CARD_GAP = 218, 504, 12
 
 local mainFrame = nil
 local confirmDialog = nil
@@ -232,12 +232,15 @@ end
 
 -- Constructor de Tarjeta de Modo AAA
 local function CreateModeCard(parent, mode, index, totalModes)
-    local totalWidth = (totalModes * CARD_W) + ((totalModes - 1) * CARD_GAP)
+    local cardW = (totalModes >= 5) and 218 or 252
+    local cardH = 504
+    local cardGap = (totalModes >= 5) and 12 or 18
+    local totalWidth = (totalModes * cardW) + ((totalModes - 1) * cardGap)
     local startX = (BASE_WIDTH - totalWidth) / 2
-    local posX = startX + ((index - 1) * (CARD_W + CARD_GAP))
+    local posX = startX + ((index - 1) * (cardW + cardGap))
 
     local card = CreateFrame("Button", "ProjectJaina_Card_" .. mode.id, parent)
-    card:SetSize(CARD_W, CARD_H)
+    card:SetSize(cardW, cardH)
     card:SetPoint("TOPLEFT", parent, "TOPLEFT", posX, -112)
     card:SetFrameLevel(70)
     card:EnableMouse(true)
@@ -263,7 +266,8 @@ local function CreateModeCard(parent, mode, index, totalModes)
 
     -- Badge Superior Flotante
     local badgeBg = card:CreateTexture(nil, "ARTWORK")
-    badgeBg:SetSize(148, 20)
+    local badgeW = (totalModes >= 5) and 136 or 148
+    badgeBg:SetSize(badgeW, 20)
     badgeBg:SetPoint("TOP", card, "TOP", 0, -14)
     badgeBg:SetTexture("Interface\\Buttons\\WHITE8X8")
     local bColor = mode.badgeColor or {0.2, 0.7, 0.2}
@@ -275,28 +279,29 @@ local function CreateModeCard(parent, mode, index, totalModes)
     badgeBorder:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
     badgeBorder:SetVertexColor(bColor[1], bColor[2], bColor[3], 0.9)
 
-    local badgeLabel = CreateStyledLabel(card, "GameFontHighlightSmall", 11, bColor)
+    local badgeLabel = CreateStyledLabel(card, "GameFontHighlightSmall", (totalModes >= 5) and 10 or 11, bColor)
     badgeLabel:SetPoint("CENTER", badgeBg, "CENTER", 0, 0)
     badgeLabel:SetText(mode.badge or "")
 
     -- Título del Modo
-    local title = CreateStyledLabel(card, "GameFontHighlightLarge", 23, mode.titleColor or {0.3, 0.2, 0.1})
+    local titleSize = (totalModes >= 5) and 20 or 23
+    local title = CreateStyledLabel(card, "GameFontHighlightLarge", titleSize, mode.titleColor or {0.3, 0.2, 0.1})
     title:SetPoint("TOP", card, "TOP", 0, -128)
-    title:SetWidth(216)
+    title:SetWidth(cardW - 14)
     title:SetText(mode.title or "Modo")
     title:SetShadowColor(0, 0, 0, 0.35)
     title:SetShadowOffset(1, -1)
 
     -- Tagline
-    local tagline = CreateStyledLabel(card, "GameFontNormalSmall", 11, {0.18, 0.12, 0.06})
+    local tagline = CreateStyledLabel(card, "GameFontNormalSmall", (totalModes >= 5) and 10 or 11, {0.18, 0.12, 0.06})
     tagline:SetPoint("TOP", title, "BOTTOM", 0, -4)
-    tagline:SetWidth(218)
+    tagline:SetWidth(cardW - 14)
     tagline:SetHeight(28)
     tagline:SetText(mode.tagline or "")
 
     -- Separador ornamental
     local div = card:CreateTexture(nil, "ARTWORK")
-    div:SetSize(190, 1)
+    div:SetSize(cardW - 32, 1)
     div:SetPoint("TOP", tagline, "BOTTOM", 0, -4)
     div:SetTexture("Interface\\Buttons\\WHITE8X8")
     div:SetVertexColor(0.45, 0.35, 0.20, 0.35)
@@ -306,14 +311,14 @@ local function CreateModeCard(parent, mode, index, totalModes)
     if mode.perks and #mode.perks > 0 then
         for pIdx, perk in ipairs(mode.perks) do
             local bullet = card:CreateTexture(nil, "ARTWORK")
-            bullet:SetSize(9, 9)
-            bullet:SetPoint("TOPLEFT", perksAnchor, "BOTTOMLEFT", 4, -5)
+            bullet:SetSize(8, 8)
+            bullet:SetPoint("TOPLEFT", perksAnchor, "BOTTOMLEFT", 2, -4)
             bullet:SetTexture("Interface\\COMMON\\Indicator-Yellow")
             bullet:SetVertexColor(math.min(1, accent[1] * 1.5), math.min(1, accent[2] * 1.5), math.min(1, accent[3] * 1.5), 0.9)
 
-            local perkText = CreateStyledLabel(card, "GameFontNormalSmall", 11, {0.14, 0.09, 0.04}, "LEFT")
-            perkText:SetPoint("TOPLEFT", bullet, "TOPRIGHT", 6, 1)
-            perkText:SetPoint("RIGHT", card, "RIGHT", -18, 0)
+            local perkText = CreateStyledLabel(card, "GameFontNormalSmall", (totalModes >= 5) and 10 or 11, {0.14, 0.09, 0.04}, "LEFT")
+            perkText:SetPoint("TOPLEFT", bullet, "TOPRIGHT", 5, 1)
+            perkText:SetPoint("RIGHT", card, "RIGHT", -12, 0)
             perkText:SetText(perk)
             perkText:SetSpacing(1)
 
@@ -322,7 +327,8 @@ local function CreateModeCard(parent, mode, index, totalModes)
     end
 
     -- Botón de Acción
-    local btn = CreateEpicButton(card, "ProjectJaina_Btn_" .. mode.id, "Elegir Modo", 184, 32, false)
+    local btnW = (totalModes >= 5) and 164 or 184
+    local btn = CreateEpicButton(card, "ProjectJaina_Btn_" .. mode.id, "Elegir Modo", btnW, 32, false)
     btn:SetPoint("BOTTOM", card, "BOTTOM", 0, 36)
     btn:SetFrameLevel(80)
     btn:EnableMouse(true)
