@@ -52,32 +52,23 @@ end
 
 -- Utilidad: Botón estilizado rojo / dorado tipo Dragonflight
 local function CreateEpicButton(parent, name, text, width, height, isDanger)
-    local btn = CreateFrame("Button", name, parent)
+    local btn = CreateFrame("Button", name, parent, "UIPanelButtonTemplate")
     btn:SetSize(width, height)
-    btn:SetNormalTexture("Interface\\Buttons\\UI-Panel-Button-Up")
-    btn:SetPushedTexture("Interface\\Buttons\\UI-Panel-Button-Down")
-    btn:SetDisabledTexture("Interface\\Buttons\\UI-Panel-Button-Disabled")
-    btn:SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight", "ADD")
-    
-    for _, tex in ipairs({btn:GetNormalTexture(), btn:GetPushedTexture(), btn:GetDisabledTexture(), btn:GetHighlightTexture()}) do
-        if tex then
-            tex:SetTexCoord(0, 0.625, 0, 0.6875)
-        end
-    end
+    btn:RegisterForClicks("AnyUp", "LeftButtonUp")
+    btn:EnableMouse(true)
 
-    local label = btn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local label = btn:GetFontString() or btn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     label:SetPoint("CENTER", btn, "CENTER", 0, 1)
     label:SetShadowColor(0, 0, 0, 1)
     label:SetShadowOffset(1, -1)
     btn:SetFontString(label)
     btn:SetText(text)
 
-    btn:SetScript("OnMouseDown", function()
-        label:SetPoint("CENTER", btn, "CENTER", 1, -1)
-    end)
-    btn:SetScript("OnMouseUp", function()
-        label:SetPoint("CENTER", btn, "CENTER", 0, 1)
-    end)
+    if isDanger then
+        label:SetTextColor(1.0, 0.35, 0.35)
+    else
+        label:SetTextColor(1.0, 0.85, 0.35)
+    end
 
     return btn
 end
@@ -96,29 +87,35 @@ local function ScaleContainerToScreen(container)
 
     -- Mínimo de 0.58 para pantallas ultra compactas (800x600)
     container:SetScale(math.max(0.58, finalScale))
+    if confirmDialog and confirmDialog.dlg then
+        confirmDialog.dlg:SetScale(math.max(0.70, finalScale))
+    end
 end
 
 -- Diálogo de confirmación modal para modos Hardcore / Ironman
 local function CreateConfirmDialog()
     if confirmDialog then return confirmDialog end
 
+    -- Bloqueador de pantalla completa en estrata superior (FULLSCREEN_DIALOG)
     local blocker = CreateFrame("Frame", "ProjectJaina_ConfirmBlocker", UIParent)
     blocker:SetAllPoints(UIParent)
     blocker:SetFrameStrata("FULLSCREEN_DIALOG")
-    blocker:SetFrameLevel(130)
+    blocker:SetFrameLevel(100)
     blocker:EnableMouse(true)
     blocker:Hide()
 
-    -- Atenuador de fondo negro semitransparente
+    -- Atenuador de fondo negro semitransparente equilibrado (60% para no cegar la UI)
     local scrim = blocker:CreateTexture(nil, "BACKGROUND")
     scrim:SetAllPoints(blocker)
     scrim:SetTexture("Interface\\Buttons\\WHITE8X8")
-    scrim:SetVertexColor(0, 0, 0, 0.82)
+    scrim:SetVertexColor(0, 0, 0, 0.60)
 
-    -- Cuadro modal centrado
+    -- Cuadro modal centrado con FrameLevel superior (120) para evitar que el blocker absorba clics
     local dlg = CreateFrame("Frame", "ProjectJaina_ConfirmDialog", blocker)
     dlg:SetSize(520, 320)
     dlg:SetPoint("CENTER", blocker, "CENTER", 0, 0)
+    dlg:SetFrameStrata("FULLSCREEN_DIALOG")
+    dlg:SetFrameLevel(120)
     dlg:EnableMouse(true)
     dlg:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -128,8 +125,8 @@ local function CreateConfirmDialog()
         edgeSize = 32,
         insets = { left = 8, right = 8, top = 8, bottom = 8 }
     })
-    dlg:SetBackdropColor(0.06, 0.05, 0.04, 0.98)
-    dlg:SetBackdropBorderColor(1.0, 0.25, 0.25, 1.0)
+    dlg:SetBackdropColor(0.08, 0.07, 0.06, 0.98)
+    dlg:SetBackdropBorderColor(1.0, 0.30, 0.30, 1.0)
 
     -- Resplandor superior
     local glow = dlg:CreateTexture(nil, "BACKGROUND")
@@ -167,9 +164,12 @@ local function CreateConfirmDialog()
     text:SetSpacing(3)
     dlg.text = text
 
-    -- Botón Aceptar Desafío
-    local btnAccept = CreateEpicButton(dlg, "ProjectJaina_ConfirmAcceptBtn", "¡Acepto el Desafío!", 200, 34, true)
+    -- Botón Aceptar Desafío (FrameLevel 140 para máxima prioridad de interacción)
+    local btnAccept = CreateEpicButton(dlg, "ProjectJaina_ConfirmAcceptBtn", "¡Acepto el Desafío!", 200, 36, true)
     btnAccept:SetPoint("BOTTOMLEFT", dlg, "BOTTOMLEFT", 38, 22)
+    btnAccept:SetFrameLevel(140)
+    btnAccept:EnableMouse(true)
+    btnAccept:RegisterForClicks("AnyUp", "LeftButtonUp")
     btnAccept:SetScript("OnClick", function()
         local modeToApply = pendingMode
         pendingMode = nil
@@ -180,14 +180,35 @@ local function CreateConfirmDialog()
     end)
     dlg.btnAccept = btnAccept
 
-    -- Botón Cancelar
-    local btnCancel = CreateEpicButton(dlg, "ProjectJaina_ConfirmCancelBtn", "Volver Atrás", 160, 34, false)
+    -- Botón Cancelar (FrameLevel 140)
+    local btnCancel = CreateEpicButton(dlg, "ProjectJaina_ConfirmCancelBtn", "Volver Atrás", 160, 36, false)
     btnCancel:SetPoint("BOTTOMRIGHT", dlg, "BOTTOMRIGHT", -38, 22)
+    btnCancel:SetFrameLevel(140)
+    btnCancel:EnableMouse(true)
+    btnCancel:RegisterForClicks("AnyUp", "LeftButtonUp")
     btnCancel:SetScript("OnClick", function()
         pendingMode = nil
         blocker:Hide()
     end)
     dlg.btnCancel = btnCancel
+
+    -- Botón Close (X superior derecha)
+    local closeBtn = CreateFrame("Button", nil, dlg, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", dlg, "TOPRIGHT", -4, -4)
+    closeBtn:SetFrameLevel(145)
+    closeBtn:SetScript("OnClick", function()
+        pendingMode = nil
+        blocker:Hide()
+    end)
+    dlg.closeBtn = closeBtn
+
+    -- Clic fuera del diálogo cierra la confirmación
+    blocker:SetScript("OnMouseDown", function()
+        if not MouseIsOver(dlg) then
+            pendingMode = nil
+            blocker:Hide()
+        end
+    end)
 
     blocker:SetScript("OnHide", function()
         pendingMode = nil
@@ -218,7 +239,9 @@ local function CreateModeCard(parent, mode, index, totalModes)
     local card = CreateFrame("Button", "ProjectJaina_Card_" .. mode.id, parent)
     card:SetSize(CARD_W, CARD_H)
     card:SetPoint("TOPLEFT", parent, "TOPLEFT", posX, -112)
+    card:SetFrameLevel(70)
     card:EnableMouse(true)
+    card:RegisterForClicks("AnyUp", "LeftButtonUp")
 
     -- Fondo de Arte de Alta Fidelidad (512x1024 RGBA)
     local artTex = card:CreateTexture(nil, "BACKGROUND")
@@ -301,6 +324,9 @@ local function CreateModeCard(parent, mode, index, totalModes)
     -- Botón de Acción
     local btn = CreateEpicButton(card, "ProjectJaina_Btn_" .. mode.id, "Elegir Modo", 184, 32, false)
     btn:SetPoint("BOTTOM", card, "BOTTOM", 0, 36)
+    btn:SetFrameLevel(80)
+    btn:EnableMouse(true)
+    btn:RegisterForClicks("AnyUp", "LeftButtonUp")
 
     -- Gestión reactiva de estado Hover
     local function ApplyHoverState(isHovered)
@@ -363,8 +389,8 @@ local function CreateMainUI()
 
     local root = CreateFrame("Frame", "ProjectJaina_GameModes_MainFrame", UIParent)
     root:SetAllPoints(UIParent)
-    root:SetFrameStrata("FULLSCREEN_DIALOG")
-    root:SetFrameLevel(90)
+    root:SetFrameStrata("DIALOG")
+    root:SetFrameLevel(50)
     root:EnableMouse(true)
     root:Hide()
 
@@ -380,6 +406,7 @@ local function CreateMainUI()
     local container = CreateFrame("Frame", nil, root)
     container:SetSize(BASE_WIDTH, BASE_HEIGHT)
     container:SetPoint("CENTER", root, "CENTER", 0, 0)
+    container:SetFrameLevel(60)
     container:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
         edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
