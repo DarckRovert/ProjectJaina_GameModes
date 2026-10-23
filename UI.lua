@@ -240,8 +240,8 @@ local function CreateModeCard(parent, mode, index, totalModes)
 
     -- Badge Superior Flotante
     local badgeBg = card:CreateTexture(nil, "ARTWORK")
-    badgeBg:SetSize(140, 22)
-    badgeBg:SetPoint("TOP", card, "TOP", 0, -100)
+    badgeBg:SetSize(148, 20)
+    badgeBg:SetPoint("TOP", card, "TOP", 0, -14)
     badgeBg:SetTexture("Interface\\Buttons\\WHITE8X8")
     local bColor = mode.badgeColor or {0.2, 0.7, 0.2}
     badgeBg:SetVertexColor(0.05, 0.05, 0.06, 0.88)

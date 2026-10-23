@@ -282,9 +282,11 @@ function M:ApplyMode(modeId, force)
     M:CloseSelectionUI()
 end
 
--- Comandos Slash (/wpmodes, /modos)
-SLASH_WOWPERU_MODES1 = "/wpmodes"
-SLASH_WOWPERU_MODES2 = "/modos"
+-- Comandos Slash (/modos, /jainamodes, /gamemodes, /wpmodes)
+SLASH_WOWPERU_MODES1 = "/modos"
+SLASH_WOWPERU_MODES2 = "/jainamodes"
+SLASH_WOWPERU_MODES3 = "/gamemodes"
+SLASH_WOWPERU_MODES4 = "/wpmodes"
 SlashCmdList["WOWPERU_MODES"] = function(msg)
     local cmd = string.lower(string.trim(msg or ""))
     

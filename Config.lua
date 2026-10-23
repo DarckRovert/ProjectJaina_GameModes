@@ -26,10 +26,10 @@ M.Config = {
     Debug = false,                    -- Activar únicamente para pruebas internas del staff (permite /wpmodes reset)
 
     -- Método de comunicación hacia el servidor:
-    -- "COMMAND"   : Ejecuta comandos de chat como .hardcore on o .desafio
+    -- "COMMAND"   : Ejecuta comandos de chat como .hardcore o .desafio
     -- "ADDON_MSG" : Envía mensaje oculto por SendAddonMessage (ideal para módulos C++ o Eluna)
     -- "BOTH"      : Envía ambos métodos simultáneamente para máxima compatibilidad
-    DispatchMethod = "ADDON_MSG",
+    DispatchMethod = "BOTH",
     AddonMsgPrefix = "WP_GAMEMODE",
 
     -- Efectos audiovisuales
@@ -38,13 +38,12 @@ M.Config = {
     SoundOnConfirm = "Sound\\Interface\\ReadyCheck.wav",
 
     -- Catálogo de Modos de Juego
-    -- Puedes cambiar 'enabled = false' para ocultar cualquiera de ellos
     Modes = {
         {
             id = "NORMAL",
             enabled = true,
             title = "Aventurero",
-            badge = "★ ESTÁNDAR",
+            badge = "|TInterface\\Icons\\INV_Sword_04:12:12:0:0|t ESTÁNDAR",
             badgeColor = {0.15, 0.75, 0.15}, -- Verde Esmeralda
             accentColor = {0.85, 0.75, 0.35}, -- Dorado
             titleColor = {0.28, 0.18, 0.08}, -- Marrón dorado oscuro legible sobre pergamino
@@ -58,7 +57,7 @@ M.Config = {
                 "Grupos y hermandades sin límites",
                 "Ritmo de experiencia regular del reino",
             },
-            command = "",
+            command = ".desafio normal",
             addonPayload = "SET_MODE:NORMAL",
             requireConfirmation = false,
         },
@@ -66,7 +65,7 @@ M.Config = {
             id = "HARDCORE",
             enabled = true,
             title = "Hardcore",
-            badge = "💀 1 SOLA VIDA",
+            badge = "|TInterface\\Icons\\Spell_Shadow_DeathScream:12:12:0:0|t 1 SOLA VIDA",
             badgeColor = {0.90, 0.15, 0.15}, -- Carmesí Sangre
             accentColor = {1.0, 0.2, 0.2},
             titleColor = {0.55, 0.08, 0.08}, -- Rojo sangre oscuro sobre pergamino
@@ -80,7 +79,7 @@ M.Config = {
                 "Títulos y monturas exclusivas al nivel 80",
                 "Inclusión en el Salón de la Fama Hardcore",
             },
-            command = ".hardcore on",
+            command = ".hardcore",
             addonPayload = "SET_MODE:HARDCORE",
             requireConfirmation = true,
             confirmTitle = "¡ADVERTENCIA DE MUERTE PERMANENTE!",
@@ -90,7 +89,7 @@ M.Config = {
             id = "IRONMAN",
             enabled = true,
             title = "Ironman",
-            badge = "🛡️ AUTOSUFICIENCIA",
+            badge = "|TInterface\\Icons\\Trade_BlackSmithing:12:12:0:0|t AUTOSUFICIENCIA",
             badgeColor = {0.25, 0.55, 0.95}, -- Azul Cobalto
             accentColor = {0.35, 0.65, 1.0},
             titleColor = {0.12, 0.22, 0.45}, -- Azul cobalto oscuro sobre pergamino
@@ -114,7 +113,7 @@ M.Config = {
             id = "SLOW_X1",
             enabled = true,
             title = "Reto Andino x1",
-            badge = "🏔️ PROGRESIÓN x1",
+            badge = "|TInterface\\Icons\\INV_Misc_Map02:12:12:0:0|t PROGRESIÓN x1",
             badgeColor = {0.90, 0.55, 0.10}, -- Ámbar Solar
             accentColor = {0.95, 0.65, 0.15},
             titleColor = {0.45, 0.22, 0.05}, -- Ámbar profundo sobre pergamino
