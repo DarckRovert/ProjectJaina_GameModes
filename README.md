@@ -71,9 +71,9 @@ Interface/AddOns/ProjectJaina_GameModes/
 
 | Comando | Alias | Descripción |
 | :--- | :--- | :--- |
-| `/wpmodes` | `/modos` | Abre el menú de selección de modos. |
-| `/wpmodes status` | `/modos status` | Muestra el modo actual seleccionado por el personaje. |
-| `/wpmodes reset` | `/modos reset` | *(Uso Dev/GM)* Resetea el bloqueo local para pruebas. |
+| `/modos` | `/jainamodes`, `/gamemodes` | Abre el menú cinematográfico de selección de modos. |
+| `/modos status` | `/jainamodes status` | Muestra el modo actual seleccionado por el personaje. |
+| `/modos reset` | `/jainamodes reset` | *(Uso Dev/GM)* Resetea el bloqueo local para pruebas (requiere `Debug = true`). |
 
 ---
 
@@ -81,7 +81,7 @@ Interface/AddOns/ProjectJaina_GameModes/
 
 1. Clona o copia la carpeta `ProjectJaina_GameModes` dentro de tu directorio `World of Warcraft/Interface/AddOns/`.
 2. Inicia el juego con el cliente 3.3.5a.
-3. Entra con un personaje nuevo de nivel 1 o escribe `/wpmodes` en el chat.
+3. Entra con un personaje nuevo de nivel 1 o escribe `/modos` en el chat.
 
 ---
 

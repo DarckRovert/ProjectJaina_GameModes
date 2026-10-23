@@ -18,9 +18,9 @@ local L = {
     ["STATUS_COMMAND"] = "|cFFD4AF37[Project Jaina]|r Modo actual de %s: |cFFFFD100%s|r (Bloqueado: %s)",
     ["RESET_SUCCESS"] = "|cFFD4AF37[Project Jaina]|r El estado de modo de juego ha sido reseteado para pruebas locales.",
     ["CMD_HELP_HEADER"] = "|cFFD4AF37Comandos de Project Jaina - Modos de Juego:|r",
-    ["CMD_HELP_SHOW"] = "  |cFFFFFFFF/wpmodes|r - Abre el menú de selección de modos",
-    ["CMD_HELP_STATUS"] = "  |cFFFFFFFF/wpmodes status|r - Consulta el modo actual del personaje",
-    ["CMD_HELP_RESET"] = "  |cFFFFFFFF/wpmodes reset|r - (Dev/GM) Resetea el bloqueo local para pruebas",
+    ["CMD_HELP_SHOW"] = "  |cFFFFFFFF/modos|r (o |cFFFFFFFF/jainamodes|r) - Abre el menú de selección de modos",
+    ["CMD_HELP_STATUS"] = "  |cFFFFFFFF/modos status|r - Consulta el modo actual del personaje",
+    ["CMD_HELP_RESET"] = "  |cFFFFFFFF/modos reset|r - (Dev/GM) Resetea el bloqueo local para pruebas",
 }
 
 if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then

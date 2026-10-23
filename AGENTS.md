@@ -17,7 +17,7 @@
    - **Sin `RegisterAddonMessagePrefix`:** No existe en 3.3.5a. No incluirlo.
 
 3. **Presupuesto de Red (255 Bytes):**
-   - Prefijo oficial: `WP_GAMEMODE`.
+   - Prefijo oficial: `JAINA_GAMEMODE`.
    - Payloads: `SET_MODE:NORMAL`, `SET_MODE:HARDCORE`, `SET_MODE:IRONMAN`, `SET_MODE:X1`.
    - Ningún mensaje puede exceder 255 bytes.
    - Canal de despacho: `GUILD` → `RAID` → `PARTY` → `SAY` (orden de fallback dinámico).

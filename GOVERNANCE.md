@@ -20,7 +20,7 @@ Selector cinematográfico nativo de modalidades de juego al iniciar sesión en N
    - Aislamiento estricto de eventos en `OnUpdate` para prevenir saturación de CPU.
 2. **Seguridad de Red y Límite Inviolable de Paquetes:**
    - Todo mensaje transmitido mediante `SendAddonMessage` respeta el límite estricto de **255 bytes por paquete** de la versión 3.3.5a.
-   - Prefijo de Red Registrado: `WP_GAMEMODE`.
+   - Prefijo de Red Registrado: `JAINA_GAMEMODE`.
 3. **Persistencia Segura e Idempotencia:**
    - La persistencia de datos utiliza variables guardadas (`ProjectJaina_GameModesDB`) y/o sincronización atómica con el backend del servidor (`80_GameModesSystem.lua y tabla MySQL character_game_modes`).
    - Cero pérdida de datos ante desconexiones intempestivas o reinicios con sistemas tipo *Deep Freeze*.

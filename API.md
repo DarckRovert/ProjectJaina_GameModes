@@ -13,13 +13,14 @@ Selector de modos de juego (Normal, Hardcore, Ironman) al crear personaje, con p
 ---
 
 ## ⌨️ Comandos de Consola (Slash Commands)
-- `/modos`: Acceso principal o comando del addon.
-- `/wpmodes`: Acceso principal o comando del addon.
+- `/modos`: Acceso principal para abrir la ventana del selector.
+- `/jainamodes`: Acceso alternativo con branding soberano.
+- `/gamemodes`: Acceso canónico en inglés.
 
 ---
 
 ## 📡 Protocolo de Red y Eventos
-- `WP_MODES`: Prefijo registrado para sincronización de datos.
+- `JAINA_GAMEMODE`: Prefijo registrado para sincronización de datos (Whisper channel 7).
 
 ### Eventos del Motor 3.3.5a Gestionados
 - `PLAYER_LOGIN` / `ADDON_LOADED`: Inicialización atómica de tablas de configuración y hooks.

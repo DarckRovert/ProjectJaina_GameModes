@@ -282,12 +282,11 @@ function M:ApplyMode(modeId, force)
     M:CloseSelectionUI()
 end
 
--- Comandos Slash (/modos, /jainamodes, /gamemodes, /wpmodes)
-SLASH_WOWPERU_MODES1 = "/modos"
-SLASH_WOWPERU_MODES2 = "/jainamodes"
-SLASH_WOWPERU_MODES3 = "/gamemodes"
-SLASH_WOWPERU_MODES4 = "/wpmodes"
-SlashCmdList["WOWPERU_MODES"] = function(msg)
+-- Comandos Slash (/modos, /jainamodes, /gamemodes)
+SLASH_JAINA_MODES1 = "/modos"
+SLASH_JAINA_MODES2 = "/jainamodes"
+SLASH_JAINA_MODES3 = "/gamemodes"
+SlashCmdList["JAINA_MODES"] = function(msg)
     local cmd = string.lower(string.trim(msg or ""))
     
     if cmd == "" or cmd == "show" or cmd == "menu" then
@@ -316,3 +315,6 @@ SlashCmdList["WOWPERU_MODES"] = function(msg)
         DEFAULT_CHAT_FRAME:AddMessage(M.L["CMD_HELP_RESET"])
     end
 end
+
+-- Puente de interoperabilidad pasiva (evita romper llamadas desde ProjectJaina_Wardrobe u otros módulos)
+SlashCmdList["WOWPERU_MODES"] = SlashCmdList["JAINA_MODES"]

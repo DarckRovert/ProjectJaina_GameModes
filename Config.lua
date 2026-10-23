@@ -23,14 +23,14 @@ M.Config = {
     AutoOpenOnFirstLogin = true,      -- Se abre de inmediato al entrar al mundo con un personaje nuevo
     MaxLevelForPrompt = 1,            -- Solo se muestra si el nivel es menor o igual a este valor (55 para DK)
     RequireDecisionToPlay = true,     -- Oscurece la pantalla de fondo para forzar una decisión clara
-    Debug = false,                    -- Activar únicamente para pruebas internas del staff (permite /wpmodes reset)
+    Debug = false,                    -- Activar únicamente para pruebas internas del staff (permite /jainamodes reset)
 
     -- Método de comunicación hacia el servidor:
     -- "COMMAND"   : Ejecuta comandos de chat como .hardcore o .desafio
     -- "ADDON_MSG" : Envía mensaje oculto por SendAddonMessage (ideal para módulos C++ o Eluna)
     -- "BOTH"      : Envía ambos métodos simultáneamente para máxima compatibilidad
     DispatchMethod = "BOTH",
-    AddonMsgPrefix = "WP_GAMEMODE",
+    AddonMsgPrefix = "JAINA_GAMEMODE",
 
     -- Efectos audiovisuales
     SoundOnOpen = "Sound\\Interface\\iQuestLogOpen.wav",

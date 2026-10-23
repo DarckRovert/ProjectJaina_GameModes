@@ -69,7 +69,7 @@ Abre `Config.lua` y localiza la tabla `M.Config.Modes`:
 
 Si prefieres no usar comandos de chat visibles y quieres una comunicación silenciosa entre el cliente y el servidor, el addon está configurado para emitir automáticamente paquetes por canal oculto:
 
-* **Prefix:** `WP_GAMEMODE` (configurable en `Config.AddonMsgPrefix`)
+* **Prefix:** `JAINA_GAMEMODE` (configurable en `Config.AddonMsgPrefix`)
 * **Payloads emitidos:**
   * `SET_MODE:NORMAL`
   * `SET_MODE:HARDCORE`
@@ -78,7 +78,7 @@ Si prefieres no usar comandos de chat visibles y quieres una comunicación silen
 
 ### Ejemplo de captura en Eluna (Protocolo Bidireccional con Handshake):
 ```lua
-local PREFIX = "WP_GAMEMODE"
+local PREFIX = "JAINA_GAMEMODE"
 
 local function ProcessGameMode(player, mode)
     if mode == "SET_MODE:HARDCORE" then
@@ -105,10 +105,10 @@ local function OnAddonMessage(event, sender, type, prefix, text)
 end
 RegisterServerEvent(30, OnAddonMessage)
 
--- Captura vía comando transparente para personajes nivel 1 solitarios (.wp_gamemode)
+-- Captura vía comando transparente para personajes nivel 1 solitarios (.jaina_gamemode)
 local function OnPlayerCommand(event, player, command)
     local cmd, payload = command:match("^(%S+)%s+(%S+)$")
-    if cmd and cmd:lower() == "wp_gamemode" then
+    if cmd and cmd:lower() == "jaina_gamemode" then
         ProcessGameMode(player, payload)
         return false -- Silenciar el comando para que no arroje error en consola
     end

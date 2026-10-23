@@ -13,7 +13,7 @@ Contiene Selector cinematográfico nativo de modalidades de juego al iniciar ses
 ---
 
 ## 2. Arquitectura y Protocolo Autoritativo
-* **Prefijo de Red:** `WP_GAMEMODE`
+* **Prefijo de Red:** `JAINA_GAMEMODE`
 * **Integración Servidor:** `80_GameModesSystem.lua y tabla MySQL character_game_modes`
 * **Variables Guardadas:** `ProjectJaina_GameModesDB`
 * **Comandos Slash:** `/gamemode, /modos`

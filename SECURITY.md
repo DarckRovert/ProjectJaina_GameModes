@@ -19,7 +19,7 @@ La seguridad de **ProjectJaina_GameModes** se fundamenta en el aislamiento estri
    - Se evita estrictamente la modificación de tablas globales del sistema sin nombres de espacio propios (`PJ_*` o nombres de addon).
 2. **Límite de Red y Prevención de Desbordamiento:**
    - La API `SendAddonMessage` está restringida a un máximo absoluto de **255 bytes por paquete**. Todo payload emitido se fragmenta o comprime en estructuras compactas.
-   - Prefijo auditado: `WP_GAMEMODE`.
+   - Prefijo auditado: `JAINA_GAMEMODE`.
 3. **Validación Autoritativa en Servidor:**
    - El cliente de interfaz es tratado como un medio de presentación potencialmente no confiable. Ninguna transacción de ítems, progreso, monedas o recompensas es decidida por el cliente; el servidor Eluna / C++ (`80_GameModesSystem.lua y tabla MySQL character_game_modes`) valida y aplica los cambios en MySQL.
 4. **Higiene de Strings y Sanitización:**
