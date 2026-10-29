@@ -3,7 +3,6 @@
 ## Title: |cFFD4AF37Project Jaina|r - Modos de Juego
 ## Notes: Selector cinematográfico de modos de juego (Aventurero, Hardcore, Ironman, Reto Andino x1, Die & Rise) para nuevos personajes en Project Jaina.
 ## Author: DarckRovert (Elnazzareno) & Antigravity (Mythos 5)
-## Version: 1.2.0
 ## SavedVariables: ProjectJaina_GameModes_GlobalDB
 ## SavedVariablesPerCharacter: ProjectJaina_GameModes_CharDB
 
