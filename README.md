@@ -7,8 +7,8 @@
 [![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FProjectJaina_GameModes-black?logo=github)](https://github.com/DarckRovert/ProjectJaina_GameModes)
 
 [![WoW Client](https://img.shields.io/badge/WoW%20Client-3.3.5a%20(Build%2012340)-blue.svg)](https://darckrovert.github.io/ProjectJaina_Web/)
-[![Server](https://img.shields.io/badge/Servidor-Project%20Jaina-00ccff.svg)](https://darckrovert.github.io/ProjectJaina_Web/)
-[![Realm](https://img.shields.io/badge/Reino-Reino%20Andino-red.svg)](https://darckrovert.github.io/ProjectJaina_Web/)
+[![Server](https://img.shields.io/badge/Engine-JainaCore%20C%2B%2B20-blue.svg)](https://darckrovert.github.io/ProjectJaina_Web/)
+[![Realm](https://img.shields.io/badge/Realm-Project%20JAIna-blue.svg)](https://darckrovert.github.io/ProjectJaina_Web/)
 [![License](https://img.shields.io/badge/Licencia-MIT-green.svg)](LICENSE)
 
 **Módulo nativo y cinematográfico de selección de modos de juego para nuevos personajes en el servidor privado Project Jaina (Project Jaina).**
