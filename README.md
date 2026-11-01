@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DarckRovert/ProjectJaina_Web/main/images/project_jaina_official_logo.jpg" alt="Project JAIna Official Crest" width="180">
+</p>
+
 # ⚔️ Project Jaina - Selector de Modos de Juego (Game Modes Suite)
 
 [![GitHub](https://img.shields.io/badge/GitHub-DarckRovert%2FProjectJaina_GameModes-black?logo=github)](https://github.com/DarckRovert/ProjectJaina_GameModes)
