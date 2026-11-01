@@ -1,6 +1,6 @@
 # 📘 Guía de Integración Técnica para el Staff de Project Jaina
 
-Este documento está dirigido al **administrador o desarrollador de backend/core de Project Jaina**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (JainaCore o TrinityCore).
+Este documento está dirigido al **administrador o desarrollador de backend/core de Project Jaina**. Explica cómo embeber el selector de modos de juego en el cliente oficial y cómo conectarlo con el emulador (JainaCore C++20).
 
 ---
 
