@@ -183,6 +183,13 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "CHAT_MSG_ADDON" then
         local prefix, message, channel, sender = arg1, arg2, arg3, arg4
         if prefix == M.Config.AddonMsgPrefix and message then
+            -- 0. Apertura remota ordenada por NPC o Servidor
+            if message == "OPEN_UI" then
+                if not InCombatLockdown() then
+                    M:OpenSelectionUI()
+                end
+                return
+            end
             -- 1. Confirmación de activación exitosa desde el backend
             if string.find(message, "^ACK:") then
                 local modeAck = string.sub(message, 5)
@@ -298,8 +305,9 @@ end
 
 -- Comandos Slash (/modos, /jainamodes, /gamemodes)
 SLASH_JAINA_MODES1 = "/modos"
-SLASH_JAINA_MODES2 = "/jainamodes"
-SLASH_JAINA_MODES3 = "/gamemodes"
+SLASH_JAINA_MODES2 = "/modo"
+SLASH_JAINA_MODES3 = "/jainamodes"
+SLASH_JAINA_MODES4 = "/gamemodes"
 SlashCmdList["JAINA_MODES"] = function(msg)
     local cmd = string.lower(string.trim(msg or ""))
     
