@@ -337,6 +337,9 @@ local function CreateModeCard(parent, mode, index, totalModes)
     -- Gestión reactiva de estado Hover
     local function ApplyHoverState(isHovered)
         local isCurrent = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode == mode.id)
+        if mode.id == "SLOW_X1" and ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.isX1 then
+            isCurrent = true
+        end
         if isHovered or isCurrent then
             artTex:SetVertexColor(1.0, 1.0, 1.0, 1.0)
             glowBorder:SetVertexColor(accent[1], accent[2], accent[3], 0.95)
@@ -367,8 +370,14 @@ local function CreateModeCard(parent, mode, index, totalModes)
     end)
 
     local function HandleSelect()
-        if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then
-            return
+        if mode.id == "SLOW_X1" then
+            if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.isX1 then
+                return
+            end
+        else
+            if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then
+                return
+            end
         end
         if mode.requireConfirmation then
             PromptConfirmation(mode)
@@ -507,10 +516,19 @@ local function UpdateCardsState()
 
     local isLocked = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode)
     local currentMode = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.selectedMode)
+    local isX1 = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.isX1)
 
     for _, card in ipairs(mainFrame.container.cards) do
         if card.modeData and card.actionBtn then
-            if currentMode and card.modeData.id == currentMode then
+            if card.modeData.id == "SLOW_X1" then
+                if isX1 then
+                    card.actionBtn:SetText("RETO ACTIVO")
+                    card.actionBtn:Disable()
+                else
+                    card.actionBtn:SetText("Activar Reto x1")
+                    card.actionBtn:Enable()
+                end
+            elseif currentMode and card.modeData.id == currentMode then
                 card.actionBtn:SetText(M.L["SELECTED_BADGE"] or "SELECCIONADO")
                 card.actionBtn:Disable()
             elseif isLocked then
@@ -526,6 +544,7 @@ local function UpdateCardsState()
         end
     end
 end
+M.UpdateCardsState = UpdateCardsState
 
 -- API Pública de Apertura
 function M:OpenSelectionUI()
@@ -536,7 +555,7 @@ function M:OpenSelectionUI()
 
     UpdateCardsState()
 
-    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode then
+    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode and ProjectJaina_GameModes_CharDB.isX1 then
         DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], ProjectJaina_GameModes_CharDB.selectedMode or "Desconocido"))
     end
 

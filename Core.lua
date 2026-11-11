@@ -69,6 +69,13 @@ local function CheckServerAuras()
                 ProjectJaina_GameModes_CharDB.selectedMode = "DIE_AND_RISE"
             end
             return true
+        elseif string.find(lowerName, "reto andino") or string.find(lowerName, "slow_x1") or string.find(lowerName, "reto x1") then
+            if ProjectJaina_GameModes_CharDB then
+                ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+                ProjectJaina_GameModes_CharDB.selectedMode = "SLOW_X1"
+                ProjectJaina_GameModes_CharDB.isX1 = true
+            end
+            return true
         end
     end
     return false
@@ -195,10 +202,21 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                 local modeAck = string.sub(message, 5)
                 if ProjectJaina_GameModes_CharDB then
                     ProjectJaina_GameModes_CharDB.hasSelectedMode = true
-                    ProjectJaina_GameModes_CharDB.selectedMode = modeAck
+                    if modeAck == "SLOW_X1" or modeAck == "X1" then
+                        ProjectJaina_GameModes_CharDB.isX1 = true
+                        if not ProjectJaina_GameModes_CharDB.selectedMode or ProjectJaina_GameModes_CharDB.selectedMode == "NONE" then
+                            ProjectJaina_GameModes_CharDB.selectedMode = "NORMAL"
+                        end
+                    else
+                        ProjectJaina_GameModes_CharDB.selectedMode = modeAck
+                    end
                 end
                 if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then
-                    M:CloseSelectionUI()
+                    if modeAck ~= "SLOW_X1" and modeAck ~= "X1" then
+                        M:CloseSelectionUI()
+                    else
+                        if M.UpdateCardsState then M.UpdateCardsState() end
+                    end
                 end
             -- 2. Reporte de estado desde el servidor (re-sincronización)
             elseif string.find(message, "^STATUS:") then
@@ -208,6 +226,12 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                 local serverMode = parts[1] or "NONE"
                 local lives = tonumber(parts[2]) or 1
                 local maxLives = tonumber(parts[3]) or 1
+                local isX1
+                if parts[4] ~= nil then
+                    isX1 = (parts[4] == "1")
+                else
+                    isX1 = (ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.isX1) or false
+                end
 
                 if serverMode ~= "NONE" then
                     if ProjectJaina_GameModes_CharDB then
@@ -215,6 +239,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                         ProjectJaina_GameModes_CharDB.selectedMode = serverMode
                         ProjectJaina_GameModes_CharDB.lives = lives
                         ProjectJaina_GameModes_CharDB.maxLives = maxLives
+                        ProjectJaina_GameModes_CharDB.isX1 = isX1
                     end
                     -- Si el menú de selección estaba en pantalla, cerrarlo de inmediato
                     if ProjectJaina_GameModes_MainFrame and ProjectJaina_GameModes_MainFrame:IsShown() then
@@ -225,6 +250,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                     if ProjectJaina_GameModes_CharDB then
                         ProjectJaina_GameModes_CharDB.hasSelectedMode = false
                         ProjectJaina_GameModes_CharDB.selectedMode = nil
+                        ProjectJaina_GameModes_CharDB.isX1 = false
                     end
                     if IsEligibleForPrompt() and not InCombatLockdown() then
                         M:OpenSelectionUI()
@@ -249,12 +275,20 @@ end)
 
 -- Función pública para aplicar el modo seleccionado (con protección de inmutabilidad)
 function M:ApplyMode(modeId, force)
-    -- Candado de seguridad: Evitar sobrescritura si ya está bloqueado
-    if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode and not force then
-        local current = ProjectJaina_GameModes_CharDB.selectedMode or "Desconocido"
-        DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], current))
-        M:CloseSelectionUI()
-        return
+    local isX1 = (modeId == "SLOW_X1" or modeId == "X1")
+    if isX1 then
+        if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.isX1 and not force then
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFD4AF37[Project Jaina]|r Tu personaje ya tiene activo el Reto Andino x1.")
+            return
+        end
+    else
+        -- Candado de seguridad: Evitar sobrescritura si ya está bloqueado
+        if ProjectJaina_GameModes_CharDB and ProjectJaina_GameModes_CharDB.hasSelectedMode and (ProjectJaina_GameModes_CharDB.selectedMode and ProjectJaina_GameModes_CharDB.selectedMode ~= "NONE") and not force then
+            local current = ProjectJaina_GameModes_CharDB.selectedMode or "Desconocido"
+            DEFAULT_CHAT_FRAME:AddMessage(string.format(M.L["ALREADY_SELECTED"], current))
+            M:CloseSelectionUI()
+            return
+        end
     end
 
     local selectedMode = nil
@@ -271,9 +305,17 @@ function M:ApplyMode(modeId, force)
     end
 
     -- Guardar estado localmente en el personaje
-    ProjectJaina_GameModes_CharDB.hasSelectedMode = true
-    ProjectJaina_GameModes_CharDB.selectedMode = selectedMode.id
-    ProjectJaina_GameModes_CharDB.timestamp = time()
+    if isX1 then
+        ProjectJaina_GameModes_CharDB.isX1 = true
+        if not ProjectJaina_GameModes_CharDB.selectedMode or ProjectJaina_GameModes_CharDB.selectedMode == "NONE" then
+            ProjectJaina_GameModes_CharDB.selectedMode = "NORMAL"
+            ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+        end
+    else
+        ProjectJaina_GameModes_CharDB.hasSelectedMode = true
+        ProjectJaina_GameModes_CharDB.selectedMode = selectedMode.id
+        ProjectJaina_GameModes_CharDB.timestamp = time()
+    end
 
     -- Ejecutar despacho según configuración
     local method = M.Config.DispatchMethod or "BOTH"
@@ -293,6 +335,10 @@ function M:ApplyMode(modeId, force)
     -- Reproducir sonido de confirmación
     if M.Config.SoundOnConfirm then
         PlaySoundFile(M.Config.SoundOnConfirm)
+    end
+
+    if M.UpdateCardsState then
+        M.UpdateCardsState()
     end
 
     -- Mensaje de bienvenida y confirmación en el chat
